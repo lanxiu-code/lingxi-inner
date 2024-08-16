@@ -1,3 +1,10 @@
-export default class  Constant {
+export const BASE_URL = "http://211.101.237.203:8111/api";
 
-}
+export const PUB_KEY = `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx8lYgA4p9HSbIqEtumyG
+ovPSxJnPx+/KSLBQDnHMoCt0LN0bxUYh3/ziawdJ2xJci4GQyPIvfLuJqfqaThPD
+cwRExLb5Ujf9GXSc9vMVJ1Rp3HFPzr1wH23S9bsYA5hqjwqJBI0AZR9IMIiax8Es
+zs7Gb/mPPsvQLq5RpEKYjUaYAJlE4pee5FvbFkRyO5kT6SGsyPp/IKht8APW1ikY
+UFI++on9kxU/mmqSjGPaKi0NhA3dnsAIvN7vEtLNskCcyBNGUHpHVENKDyVIm+0H
+B8EZxKg35OvWB6MWpa2ts0II40IQkOW4OrmwwBR5GxtUT4hUryZQ3rP8vTngykGO
+zQIDAQAB`;
+

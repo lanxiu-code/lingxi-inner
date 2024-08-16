@@ -1,3 +1,5 @@
+import {rsaEncrypt,getTimestamp,getSign} from "../utils/EncryptUtil"
+import {getCode,doAccountRegister} from '../api/common'
 @Entry
 @Component
 struct Index {
@@ -5,9 +7,9 @@ struct Index {
   build() {
     Row() {
       Column() {
-        Text(this.message)
-          .fontSize(50)
-          .fontWeight(FontWeight.Bold)
+        Button("加密").onClick(async ()=>{
+
+        })
       }
       .width('100%')
     }
