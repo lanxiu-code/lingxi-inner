@@ -5,9 +5,6 @@ import lombok.Data;
 
 /**
  * 用户创建请求
- *
- * 
- * 
  */
 @Data
 public class UserAddRequest implements Serializable {
@@ -25,12 +22,12 @@ public class UserAddRequest implements Serializable {
     /**
      * 用户头像
      */
-    private String userAvatar;
+    private String avatarUrl;
 
     /**
      * 用户角色: user, admin
      */
-    private String userRole;
+    private Integer userRole;
 
     private static final long serialVersionUID = 1L;
 }

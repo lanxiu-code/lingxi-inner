@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户
- * @TableName user
+ * 队伍
+ * @TableName team
  */
-@TableName(value ="user")
+@TableName(value ="team")
 @Data
-public class User implements Serializable {
+public class Team implements Serializable {
     /**
      * id
      */
@@ -22,57 +22,39 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 用户昵称
+     * 队伍名称
      */
-    private String username;
+    private String name;
 
     /**
-     * 账号
+     * 描述
      */
-    private String userAccount;
+    private String description;
+
+    /**
+     * 最大人数
+     */
+    private Integer maxNum;
+
+    /**
+     * 过期时间
+     */
+    private Date expireTime;
+
+    /**
+     * 用户id（队长 id）
+     */
+    private Long userId;
+
+    /**
+     * 0 - 公开，1 - 私有，2 - 加密
+     */
+    private Integer status;
 
     /**
      * 密码
      */
-    private String userPassword;
-    /*
-    * 用户简介
-    * */
-    private String userProfile;
-    /**
-     * 用户头像
-     */
-    private String avatarUrl;
-
-    /**
-     * 性别
-     */
-    private Integer gender;
-
-    /**
-     * 电话
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 状态 0 - 正常
-     */
-    private Integer userStatus;
-
-    /**
-     * 用户角色 0 - 普通用户 1 - 管理员
-     */
-    private Integer userRole;
-
-    /**
-     * 标签 json 列表
-     */
-    private String tags;
+    private String password;
 
     /**
      * 创建时间

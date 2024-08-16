@@ -18,17 +18,17 @@ public interface UserConstant {
     /**
      * 默认角色
      */
-    String DEFAULT_ROLE = "user";
+    int DEFAULT_ROLE = 0;
 
     /**
      * 管理员角色
      */
-    String ADMIN_ROLE = "admin";
+    int ADMIN_ROLE = 1;
 
     /**
      * 被封号
      */
-    String BAN_ROLE = "ban";
+    int BAN_ROLE = -1;
 
     // endregion
 }

@@ -2,7 +2,13 @@ package com.lingxi.lingxibackend.model.vo;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.lingxi.lingxibackend.model.entity.Tag;
+import com.lingxi.lingxibackend.model.entity.User;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 /**
  * 用户视图（脱敏）
@@ -12,36 +18,79 @@ import lombok.Data;
  */
 @Data
 public class UserVO implements Serializable {
-
     /**
      * id
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
      * 用户昵称
      */
-    private String userName;
+    private String username;
 
+    /*
+     * 用户简介
+     * */
+    private String userProfile;
     /**
      * 用户头像
      */
-    private String userAvatar;
+    private String avatarUrl;
 
     /**
-     * 用户简介
+     * 性别
      */
-    private String userProfile;
+    private Integer gender;
 
     /**
-     * 用户角色：user/admin/ban
+     * 电话
      */
-    private String userRole;
+    private String phone;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 状态 0 - 正常
+     */
+    private Integer userStatus;
+
+    /**
+     * 用户角色 0 - 普通用户 1 - 管理员
+     */
+    private Integer userRole;
+
+    /**
+     * 标签 json 列表
+     */
+    private String tags;
 
     /**
      * 创建时间
      */
     private Date createTime;
 
+    /**
+     *
+     */
+    private Date updateTime;
+
     private static final long serialVersionUID = 1L;
+    /**
+     * 对象转包装类
+     *
+     * @param user
+     * @return
+     */
+    public static UserVO objToVo(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
+    }
 }

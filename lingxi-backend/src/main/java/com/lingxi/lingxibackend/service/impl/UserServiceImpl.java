@@ -3,25 +3,34 @@ package com.lingxi.lingxibackend.service.impl;
 import static com.lingxi.lingxibackend.constant.UserConstant.USER_LOGIN_STATE;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Pair;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lingxi.lingxibackend.common.ErrorCode;
 import com.lingxi.lingxibackend.constant.CommonConstant;
 import com.lingxi.lingxibackend.exception.BusinessException;
+import com.lingxi.lingxibackend.exception.ThrowUtils;
 import com.lingxi.lingxibackend.mapper.UserMapper;
 import com.lingxi.lingxibackend.model.dto.user.UserQueryRequest;
+import com.lingxi.lingxibackend.model.entity.Tag;
 import com.lingxi.lingxibackend.model.entity.User;
 import com.lingxi.lingxibackend.model.enums.UserRoleEnum;
 import com.lingxi.lingxibackend.model.vo.LoginUserVO;
 import com.lingxi.lingxibackend.model.vo.UserVO;
 import com.lingxi.lingxibackend.service.UserService;
+import com.lingxi.lingxibackend.utils.AlgorithmUtils;
 import com.lingxi.lingxibackend.utils.SqlUtils;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -29,19 +38,15 @@ import org.springframework.util.DigestUtils;
 
 /**
  * 用户服务实现
- *
- * 
- * 
+
  */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
     /**
      * 盐值，混淆密码
      */
     private static final String SALT = "lingxi";
-
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -107,38 +112,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 3. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         return this.getLoginUserVO(user);
-    }
-
-    @Override
-    public LoginUserVO userLoginByMpOpen(WxOAuth2UserInfo wxOAuth2UserInfo, HttpServletRequest request) {
-        String unionId = wxOAuth2UserInfo.getUnionId();
-        String mpOpenId = wxOAuth2UserInfo.getOpenid();
-        // 单机锁
-        synchronized (unionId.intern()) {
-            // 查询用户是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("unionId", unionId);
-            User user = this.getOne(queryWrapper);
-            // 被封号，禁止登录
-            if (user != null && UserRoleEnum.BAN.getValue().equals(user.getUserRole())) {
-                throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "该用户已被封，禁止登录");
-            }
-            // 用户不存在则创建
-            if (user == null) {
-                user = new User();
-                user.setUnionId(unionId);
-                user.setMpOpenId(mpOpenId);
-                user.setUserAvatar(wxOAuth2UserInfo.getHeadImgUrl());
-                user.setUserName(wxOAuth2UserInfo.getNickname());
-                boolean result = this.save(user);
-                if (!result) {
-                    throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败");
-                }
-            }
-            // 记录用户的登录态
-            request.getSession().setAttribute(USER_LOGIN_STATE, user);
-            return getLoginUserVO(user);
-        }
     }
 
     /**
@@ -251,22 +224,86 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
         Long id = userQueryRequest.getId();
-        String unionId = userQueryRequest.getUnionId();
-        String mpOpenId = userQueryRequest.getMpOpenId();
-        String userName = userQueryRequest.getUserName();
-        String userProfile = userQueryRequest.getUserProfile();
-        String userRole = userQueryRequest.getUserRole();
+        String username = userQueryRequest.getUsername();
+        Integer gender = userQueryRequest.getGender();
+        Integer userStatus = userQueryRequest.getUserStatus();
         String sortField = userQueryRequest.getSortField();
         String sortOrder = userQueryRequest.getSortOrder();
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(id != null, "id", id);
-        queryWrapper.eq(StringUtils.isNotBlank(unionId), "unionId", unionId);
-        queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mpOpenId", mpOpenId);
-        queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
-        queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
-        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
+        queryWrapper.like(StringUtils.isNotBlank(username), "username", username);
+        queryWrapper.eq(ObjectUtil.isNotNull(gender), "gender", gender);
+        queryWrapper.eq(ObjectUtil.isNotNull(userStatus), "userStatus", userStatus);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
+    }
+
+    /**
+     * 根据标签搜索用户(基于内存查询)
+     * @param tags
+     * @return
+     */
+    @Override
+    public List<UserVO> searchUsersByTags(List<String> tags) {
+        if(CollectionUtil.isEmpty(tags)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<User> userList = this.list();
+        return userList.stream().filter(user -> {
+            String userTags = user.getTags();
+            if (StrUtil.isBlank(userTags)) {
+                return false;
+            }
+            for (String tag : tags) {
+                if (!userTags.contains(tag)) {
+                    return false;
+                }
+            }
+            return true;
+        }).map(UserVO::objToVo).collect(Collectors.toList());
+    }
+    /*
+     * 获取最匹配的用户
+     * */
+    @Override
+    public List<UserVO> matchUsers(long num, User loginUser) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("tags");
+        queryWrapper.select("id","tags");
+        List<User> userList = this.list(queryWrapper);
+        String tags = loginUser.getTags();
+        List<String> tagList = JSONUtil.toList(tags, String.class);
+        // 用户列表的下表 => 相似度
+        List<Pair<User,Long>> indexDistanceList =  new ArrayList<>();
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userTags = user.getTags();
+            // 无标签的
+            if (StrUtil.isBlank(userTags) || user.getId().equals(loginUser.getId())) {
+                continue;
+            }
+            try {
+                List<String> userTagList = JSONUtil.toList(userTags, String.class);
+                //计算分数
+                long distance = AlgorithmUtils.minDistance(tagList, userTagList);
+                indexDistanceList.add(new Pair<>(user,distance));
+            }catch (Exception e){
+                log.info("标签格式错误:",user.getId());
+            }
+        }
+        //按编辑距离有小到大排序
+        List<Pair<User, Long>> topUserPairList = indexDistanceList.stream().sorted((a, b) -> (int) (a.getValue() - b.getValue()))
+                .limit(num).collect(Collectors.toList());
+        List<Long> userListIds = topUserPairList.stream().map(pair -> pair.getKey().getId()).collect(Collectors.toList());
+        //根据id查询user完整信息
+        Map<Long, List<UserVO>> userIdUserListMap = this.listByIds(userListIds).stream()
+                .map(UserVO::objToVo)
+                .collect(Collectors.groupingBy(UserVO::getId));
+        List<UserVO> finalUserList = new ArrayList<>();
+        for (Long userId : userListIds) {
+            finalUserList.add(userIdUserListMap.get(userId).get(0));
+        }
+        return finalUserList;
     }
 }

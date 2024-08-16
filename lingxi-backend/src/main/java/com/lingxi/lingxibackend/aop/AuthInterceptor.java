@@ -1,5 +1,6 @@
 package com.lingxi.lingxibackend.aop;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.lingxi.lingxibackend.annotation.AuthCheck;
 import com.lingxi.lingxibackend.common.ErrorCode;
 import com.lingxi.lingxibackend.exception.BusinessException;
@@ -39,18 +40,18 @@ public class AuthInterceptor {
      */
     @Around("@annotation(authCheck)")
     public Object doInterceptor(ProceedingJoinPoint joinPoint, AuthCheck authCheck) throws Throwable {
-        String mustRole = authCheck.mustRole();
+        Integer mustRole = authCheck.mustRole();
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         // 当前登录用户
         User loginUser = userService.getLoginUser(request);
         // 必须有该权限才通过
-        if (StringUtils.isNotBlank(mustRole)) {
+        if (ObjectUtil.isNotNull(mustRole)) {
             UserRoleEnum mustUserRoleEnum = UserRoleEnum.getEnumByValue(mustRole);
             if (mustUserRoleEnum == null) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
             }
-            String userRole = loginUser.getUserRole();
+            Integer userRole = loginUser.getUserRole();
             // 如果被封号，直接拒绝
             if (UserRoleEnum.BAN.equals(mustUserRoleEnum)) {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR);

@@ -20,7 +20,7 @@ public @interface AuthCheck {
      *
      * @return
      */
-    String mustRole() default "";
+    int mustRole() default -1;
 
 }
 

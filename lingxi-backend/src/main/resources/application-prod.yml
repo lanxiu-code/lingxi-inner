@@ -8,7 +8,7 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/my_db
+    url: jdbc:mysql://localhost:3306/lingxi
     username: root
     password: root
   # Redis 配置
@@ -33,13 +33,13 @@ mybatis-plus:
 springdoc:
   group-configs:
     - group: 'default'
-      packages-to-scan: com.lingxi.lingxi.controller
+      packages-to-scan: com.lingxi.lingxibackend.controller
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   # 开启增强配置
   enable: true
   # 开启生产环境屏蔽
-  production: true
+  production: false
   # 开启Swagger的Basic认证功能,默认是false
   basic:
     enable: true

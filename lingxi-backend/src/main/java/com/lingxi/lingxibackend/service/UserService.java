@@ -38,14 +38,7 @@ public interface UserService extends IService<User> {
      */
     LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
-    /**
-     * 用户登录（微信开放平台）
-     *
-     * @param wxOAuth2UserInfo 从微信获取的用户信息
-     * @param request
-     * @return 脱敏后的用户信息
-     */
-    LoginUserVO userLoginByMpOpen(WxOAuth2UserInfo wxOAuth2UserInfo, HttpServletRequest request);
+
 
     /**
      * 获取当前登录用户
@@ -118,4 +111,12 @@ public interface UserService extends IService<User> {
      */
     QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest);
 
+    /*
+    * 根据标签搜索用户
+    * */
+    List<UserVO> searchUsersByTags(List<String> tags);
+    /*
+     * 获取最匹配的用户
+     * */
+    List<UserVO> matchUsers(long num, User loginUser);
 }

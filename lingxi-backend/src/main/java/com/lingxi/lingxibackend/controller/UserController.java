@@ -1,5 +1,9 @@
 package com.lingxi.lingxibackend.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lingxi.lingxibackend.annotation.AuthCheck;
 import com.lingxi.lingxibackend.common.BaseResponse;
@@ -23,25 +27,16 @@ import com.lingxi.lingxibackend.service.UserService;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.lingxi.lingxibackend.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
-import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
-import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户接口
- *
- * 
- * 
  */
 @RestController
 @RequestMapping("/user")
@@ -50,12 +45,11 @@ public class UserController {
 
     @Resource
     private UserService userService;
-
     @Resource
-    private WxOpenConfig wxOpenConfig;
+    private RedisUtil redisUtil;
+    private static final String SALT = "lingxi";
 
     // region 登录相关
-
     /**
      * 用户注册
      *
@@ -96,29 +90,6 @@ public class UserController {
         }
         LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
         return ResultUtils.success(loginUserVO);
-    }
-
-    /**
-     * 用户登录（微信开放平台）
-     */
-    @GetMapping("/login/wx_open")
-    public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("code") String code) {
-        WxOAuth2AccessToken accessToken;
-        try {
-            WxMpService wxService = wxOpenConfig.getWxMpService();
-            accessToken = wxService.getOAuth2Service().getAccessToken(code);
-            WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, code);
-            String unionId = userInfo.getUnionId();
-            String mpOpenId = userInfo.getOpenid();
-            if (StringUtils.isAnyBlank(unionId, mpOpenId)) {
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败，系统错误");
-            }
-            return ResultUtils.success(userService.userLoginByMpOpen(userInfo, request));
-        } catch (Exception e) {
-            log.error("userLoginByWxOpen error", e);
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败，系统错误");
-        }
     }
 
     /**
@@ -270,6 +241,13 @@ public class UserController {
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
             HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        String key = String.format("lingxi:user:recommend:%s",loginUser.getId());
+        // 读取缓存
+        Page<UserVO> userPageCache = (Page<UserVO>) redisUtil.get(key);
+        if(ObjectUtil.isNotNull(userPageCache)){
+            return ResultUtils.success(userPageCache);
+        }
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -277,19 +255,24 @@ public class UserController {
         long size = userQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 没有缓存查询数据库
         Page<User> userPage = userService.page(new Page<>(current, size),
                 userService.getQueryWrapper(userQueryRequest));
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
         List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
         userVOPage.setRecords(userVO);
+        //写缓存,10s过期
+        try{
+            redisUtil.set(key,userVOPage,60);
+        }catch (Exception e){
+            log.error("redis set key error",e);
+        }
         return ResultUtils.success(userVOPage);
     }
 
     // endregion
-
     /**
      * 更新个人信息
-     *
      * @param userUpdateMyRequest
      * @param request
      * @return
@@ -304,8 +287,33 @@ public class UserController {
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
         user.setId(loginUser.getId());
+        String userPassword = user.getUserPassword();
+        if(StrUtil.isNotBlank(userPassword)){
+            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            user.setUserPassword(encryptPassword);
+        }
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
+    }
+    /*
+    * 根据标签搜索用户
+    * */
+    @GetMapping("/search/tags")
+    public BaseResponse<List<UserVO>> searchUsers(@RequestParam(required = false) List<String> tags,HttpServletRequest request){
+        // 是否登录
+        userService.getLoginUser(request);
+        ThrowUtils.throwIf(tags.isEmpty(),ErrorCode.PARAMS_ERROR);
+        List<UserVO> userVOList = userService.searchUsersByTags(tags);
+        return ResultUtils.success(userVOList);
+    }
+    /*
+    * 获取最匹配的用户
+    * */
+    @GetMapping("/match")
+    public BaseResponse<List<UserVO>> matchUsers(@RequestParam long num,HttpServletRequest request){
+      ThrowUtils.throwIf(num<1 || num>20,ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser(request);
+        return ResultUtils.success(userService.matchUsers(num,loginUser));
     }
 }
