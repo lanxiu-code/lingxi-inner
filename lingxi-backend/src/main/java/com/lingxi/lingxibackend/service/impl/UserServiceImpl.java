@@ -77,6 +77,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            user.setAvatarUrl("https://img0.baidu.com/it/u=3860090450,2781056586&fm=253&fmt=auto?w=400&h=400");
+            user.setUsername("蓝友");
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");

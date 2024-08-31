@@ -8,17 +8,17 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lingxi
+    url: jdbc:mysql://sh-cynosdbmysql-grp-7srr6mpi.sql.tencentcdb.com:29063/lingxi?serverTimezone=Asia/Shanghai
     username: root
-    password: root
+    password: Landada@20031125
   # Redis 配置
   
   redis:
     database: 1
-    host: localhost
+    host: 8.137.105.75
     port: 6379
     timeout: 5000
-    password: 123456
+    password: lingxi@12345678
   # Elasticsearch 配置
   
   elasticsearch:
@@ -46,4 +46,4 @@ knife4j:
     # Basic认证用户名
     username: root
     # Basic认证密码
-    password: 123456
+    password: lingxi@12345678

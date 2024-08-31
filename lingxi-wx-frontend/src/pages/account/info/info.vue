@@ -6,6 +6,11 @@
         <van-cell @click="jump(3)" title="邮箱" is-link :value="currentUser.email" />
         <van-cell @click="jump(4)" title="个人简介" is-link :value="currentUser.userProfile" />
         <van-cell @click="jump(5)" title="标签" is-link />
+        <view style="padding: 20rpx">
+            <van-button round type="danger" size="normal" block @click="doLogout">
+                退出登录
+            </van-button>
+        </view>
     </view>
 </template>
 
@@ -22,6 +27,18 @@ const jump = (index) => {
     uni.navigateTo({
         url: `/pages/account/setting/setting?index=${index}`
     });
+};
+const doLogout = () => {
+    uni.clearStorageSync();
+    uni.showToast({
+        title: '退出登录',
+        duration: 1000
+    });
+    setTimeout(() => {
+        uni.reLaunch({
+            url: '/pages/login/login'
+        });
+    }, 1000);
 };
 onLoad(() => {
     tagList.value = tagStrToList(currentUser.tags);

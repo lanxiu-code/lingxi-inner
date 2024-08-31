@@ -11,6 +11,7 @@
                     clearable
                     label="账号"
                     :value="loginInfo.userAccount"
+                    @change="(event:any) => (loginInfo.userAccount = event.detail)"
                     placeholder="请输入账号"
                     border="{{ false }}"
                 />
@@ -19,6 +20,7 @@
                     clearable
                     label="密码"
                     :value="loginInfo.userPassword"
+                    @change="(event:any) => (loginInfo.userPassword = event.detail)"
                     type="password"
                     placeholder="请输入密码"
                     border="{{ false }}"
@@ -30,7 +32,9 @@
                     <van-button type="primary" size="normal" block @click="submit">登录</van-button>
                 </van-col>
                 <van-col span="10">
-                    <van-button plain type="info" size="normal" block>注册</van-button>
+                    <van-button plain type="info" size="normal" block @click="toRegister">
+                        注册
+                    </van-button>
                 </van-col>
             </van-row>
         </view>
@@ -45,6 +49,11 @@ const loginInfo: API.UserLoginRequest = reactive({
     userAccount: 'admin',
     userPassword: '12345678'
 });
+const toRegister = () => {
+    uni.reLaunch({
+        url: '/pages/register/register'
+    });
+};
 const submit = async () => {
     await store.doLogin(loginInfo);
     if (store.loginUser.id) {
