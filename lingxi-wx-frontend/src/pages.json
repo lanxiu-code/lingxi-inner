@@ -1,0 +1,168 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "用户登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "灵犀匹配",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/team/team",
+			"style": {
+				"navigationBarTitleText": "队伍"
+			}
+		},
+		{
+			"path": "pages/account/account",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/message/message",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": "找伙伴"
+			}
+		},
+		{
+			"path": "pages/searchResult/searchResult",
+			"style": {
+				"navigationBarTitleText": "搜索结果"
+			}
+		},
+		{
+			"path": "pages/account/info/info",
+			"style": {
+				"navigationBarTitleText": "用户信息"
+			}
+		},
+		{
+			"path": "pages/account/setting/setting",
+			"style": {
+				"navigationBarTitleText": "更改信息"
+			}
+		},
+		{
+			"path": "pages/team/detail/detail",
+			"style": {
+				"navigationBarTitleText": "队伍详情"
+			}
+		},
+		{
+			"path": "pages/team/teamUserList/teamUserList",
+			"style": {
+				"navigationBarTitleText": "成员列表"
+			}
+		},
+		{
+			"path": "pages/userInfo/userInfo",
+			"style": {
+				"navigationBarTitleText": "账号信息"
+			}
+		},
+		{
+			"path": "pages/match/match",
+			"style": {
+				"navigationBarTitleText": "搭子DIDI",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#433da2"
+			}
+		},
+		{
+			"path": "pages/account/team/team",
+			"style": {
+				"navigationBarTitleText": "队伍"
+			}
+		}, {
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "用户注册",
+				"navigationStyle": "custom"
+			}
+		}
+
+	],
+	"tabBar": {
+		"selectedColor": "#accbee",
+		"list": [{
+				"iconPath": "static/home.png",
+				"selectedIconPath": "static/home-active.png",
+				"pagePath": "pages/home/home",
+				"text": "首页"
+			},
+			{
+				"iconPath": "static/team.png",
+				"selectedIconPath": "static/team-active.png",
+				"pagePath": "pages/team/team",
+				"text": "队伍"
+			},
+			{
+				"iconPath": "static/search.png",
+				"selectedIconPath": "static/search-active.png",
+				"pagePath": "pages/search/search",
+				"text": "搜索"
+			},
+			{
+				"iconPath": "static/message.png",
+				"selectedIconPath": "static/message-active.png",
+				"pagePath": "pages/message/message",
+				"text": "消息"
+			},
+			{
+				"iconPath": "static/account.png",
+				"selectedIconPath": "static/account-active.png",
+				"pagePath": "pages/account/account",
+				"text": "个人"
+			}
+		]
+	},
+	"globalStyle": {
+		"usingComponents": {
+			"van-button": "wxcomponents/vant/button/index",
+			"van-row": "wxcomponents/vant/row/index",
+			"van-col": "wxcomponents/vant/col/index",
+			"van-field": "wxcomponents/vant/field/index",
+			"van-cell-group": "wxcomponents/vant/cell-group/index",
+			"van-image": "wxcomponents/vant/image/index",
+			"van-card": "wxcomponents/vant/card/index",
+			"van-tag": "wxcomponents/vant/tag/index",
+			"van-notice-bar": "wxcomponents/vant/notice-bar/index",
+			"van-tree-select": "wxcomponents/vant/tree-select/index",
+			"van-divider": "wxcomponents/vant/divider/index",
+			"van-icon": "wxcomponents/vant/icon/index",
+			"van-cell": "wxcomponents/vant/cell/index",
+			"van-cell-group": "wxcomponents/vant/cell-group/index",
+			"van-radio": "wxcomponents/vant/radio/index",
+			"van-radio-group": "wxcomponents/vant/radio-group/index",
+			"van-search": "wxcomponents/vant/search/index",
+			"van-tab": "wxcomponents/vant/tab/index",
+			"van-tabs": "wxcomponents/vant/tabs/index",
+			"van-dialog": "wxcomponents/vant/dialog/index",
+			"van-slider": "wxcomponents/vant/slider/index"
+		},
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

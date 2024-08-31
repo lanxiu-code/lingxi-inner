@@ -27,17 +27,26 @@ public class TeamVO implements Serializable {
      * 队伍名称
      */
     private String name;
-
+    /**
+     * 队伍图标
+     */
+    private String icon;
     /**
      * 描述
      */
     private String description;
-
+    /*
+    * 当前队伍人数
+    * */
+    private Integer currentNum;
     /**
      * 最大人数
      */
     private Integer maxNum;
-
+    /*
+     * 是否加入
+     * */
+    private Boolean hasJoin;
     /**
      * 过期时间
      */

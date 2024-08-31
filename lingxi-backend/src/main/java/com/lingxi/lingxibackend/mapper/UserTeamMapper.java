@@ -2,6 +2,7 @@ package com.lingxi.lingxibackend.mapper;
 
 import com.lingxi.lingxibackend.model.entity.UserTeam;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
 * @author 蓝朽
@@ -10,7 +11,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.lingxi.lingxibackend.model.entity.UserTeam
 */
 public interface UserTeamMapper extends BaseMapper<UserTeam> {
-
+    // 获取当前队伍人数
+    @Select("select count(*) from user_team where teamId = ${teamId} and isDelete = 0")
+    int getTeamUserCount(Long teamId);
 }
 
 

@@ -1,0 +1,17 @@
+{
+	"extends": "@vue/tsconfig/tsconfig.json",
+	"compilerOptions": {
+		"sourceMap": true,
+		"baseUrl": ".",
+		"isolatedModules": false,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"@/*": ["./src/*"],
+			"@vant/weapp/*": ["node_modules/@vant/weapp/dist/*"]
+		},
+		"lib": ["esnext", "dom", "ES6"],
+		"types": ["@dcloudio/types", "miniprogram-api-typings"]
+	},
+	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+}

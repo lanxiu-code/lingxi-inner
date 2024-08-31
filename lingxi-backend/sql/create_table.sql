@@ -32,6 +32,7 @@ create table team
     id          bigint auto_increment comment 'id' primary key,
     name        varchar(256)       not null comment '队伍名称',
     description varchar(1024) null comment '描述',
+    icon        varchar(1024) null comment '队伍图标',
     maxNum      int      default 1 not null comment '最大人数',
     expireTime  datetime null comment '过期时间',
     userId      bigint comment '用户id（队长 id）',

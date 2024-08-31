@@ -242,12 +242,12 @@ public class UserController {
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
             HttpServletRequest request) {
         User loginUser = userService.getLoginUser(request);
-        String key = String.format("lingxi:user:recommend:%s",loginUser.getId());
-        // 读取缓存
-        Page<UserVO> userPageCache = (Page<UserVO>) redisUtil.get(key);
-        if(ObjectUtil.isNotNull(userPageCache)){
-            return ResultUtils.success(userPageCache);
-        }
+//        String key = String.format("lingxi:user:recommend:%s",loginUser.getId());
+//        // 读取缓存
+//        Page<UserVO> userPageCache = (Page<UserVO>) redisUtil.get(key);
+//        if(ObjectUtil.isNotNull(userPageCache)){
+//            return ResultUtils.success(userPageCache);
+//        }
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -262,11 +262,11 @@ public class UserController {
         List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
         userVOPage.setRecords(userVO);
         //写缓存,10s过期
-        try{
-            redisUtil.set(key,userVOPage,60);
-        }catch (Exception e){
-            log.error("redis set key error",e);
-        }
+//        try{
+//            redisUtil.set(key,userVOPage,60);
+//        }catch (Exception e){
+//            log.error("redis set key error",e);
+//        }
         return ResultUtils.success(userVOPage);
     }
 
@@ -280,7 +280,7 @@ public class UserController {
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
             HttpServletRequest request) {
-        if (userUpdateMyRequest == null) {
+        if (ObjectUtil.hasEmpty(userUpdateMyRequest)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);

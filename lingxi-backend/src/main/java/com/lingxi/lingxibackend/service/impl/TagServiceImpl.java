@@ -59,11 +59,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         }
         String tagName = tagQueryRequest.getTagName();
         Long userId = tagQueryRequest.getUserId();
+        Integer isParent = tagQueryRequest.getIsParent();
         String sortField = tagQueryRequest.getSortField();
         String sortOrder = tagQueryRequest.getSortOrder();
         // 拼接查询条件
         queryWrapper.like(StringUtils.isNotBlank(tagName), "tagName", tagName);
         queryWrapper.eq(ObjectUtil.isNotNull(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtil.isNotNull(isParent), "isParent", isParent);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
