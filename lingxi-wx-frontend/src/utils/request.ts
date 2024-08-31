@@ -1,7 +1,7 @@
 import axios from 'axios';
 import query from 'querystring';
 // import { UniAdapter } from 'uniapp-axios-adapter';
-import { BaseUrl } from '@/constants/CommonConstant';
+import { local_url, remote_url } from '@/constants/CommonConstant';
 import { ResponseCodeEnum } from '@/enum/ResponseCodeEnum';
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
@@ -13,7 +13,7 @@ const codeMessage = {
     501: '操作错误'
 };
 const request = axios.create({
-    baseURL: BaseUrl,
+    baseURL: local_url,
     timeout: 3000,
     withCredentials: true
     // adapter: UniAdapter

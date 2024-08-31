@@ -31,6 +31,7 @@ page {
 .van-card {
     background-color: #fff !important;
     margin-bottom: 20rpx;
+    border-radius: 15rpx;
 }
 .van-sidebar-item--selected {
     border-color: #accbee;
