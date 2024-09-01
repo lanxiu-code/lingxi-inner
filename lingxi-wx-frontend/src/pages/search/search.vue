@@ -29,6 +29,12 @@ const onSearch = async () => {
     height: 100%;
     padding: 15rpx;
     box-sizing: border-box;
+    .van-sidebar-item--selected {
+        border-color: #accbee;
+    }
+    .van-tree-select__item--active {
+        color: #accbee;
+    }
     .tag {
         margin-right: 10rpx;
     }

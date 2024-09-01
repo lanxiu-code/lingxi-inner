@@ -33,10 +33,4 @@ page {
     margin-bottom: 20rpx;
     border-radius: 15rpx;
 }
-.van-sidebar-item--selected {
-    border-color: #accbee;
-}
-.van-tree-select__item--active {
-    color: #accbee;
-}
 </style>

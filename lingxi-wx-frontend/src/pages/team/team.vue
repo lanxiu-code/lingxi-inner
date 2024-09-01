@@ -15,6 +15,7 @@
             <van-tab title="加密" name="2"></van-tab>
         </van-tabs>
         <TeamList ref="teamListRef" :isLocal="true" :listData="teamList" :useCache="false" />
+        <CustomFab url="/pages/team/add/add" />
     </view>
 </template>
 

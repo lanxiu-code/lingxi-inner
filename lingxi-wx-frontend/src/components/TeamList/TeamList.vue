@@ -14,7 +14,7 @@
         <view @click="toDetail(team.id)" v-for="team in teamList" :key="team.id">
             <van-card :desc="team.description" :title="team.name">
                 <view slot="thumb">
-                    <van-image width="80" height="80" round :src="team.icon" />
+                    <van-image fit="cover" width="80" height="80" round :src="team.icon" />
                 </view>
                 <view slot="tags">
                     <van-tag style="margin-right: 10rpx" color="#ffe1e1" text-color="#ad0000">

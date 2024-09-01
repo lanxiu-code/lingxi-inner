@@ -50,6 +50,9 @@ dependencies:
   '@dcloudio/uni-quickapp-webview':
     specifier: 3.0.0-4020420240722002
     version: 3.0.0-4020420240722002(postcss@8.4.41)(vue@3.4.38)
+  '@vant/weapp':
+    specifier: ^1.11.6
+    version: 1.11.6
   axios:
     specifier: ^1.7.4
     version: 1.7.4
@@ -3808,6 +3811,10 @@ packages:
       - postcss-markdown
       - supports-color
     dev: true
+
+  /@vant/weapp@1.11.6:
+    resolution: {integrity: sha512-a3heReWYT2gNdsyj6x1hBwsM8V8NrjcPAmle86NH2CD2V/i/h0le75piW6KntSfOPCwekVWMBKhysNrBpJeKdw==}
+    dev: false
 
   /@vitejs/plugin-legacy@5.4.2(terser@5.31.6)(vite@5.2.8):
     resolution: {integrity: sha512-hlyyQL+wEIyOWdwsUKX+0g3kBU4AbHmVzHarLvVKiGGGqLIYjttMvvjk6zGY8RD9dab6QuFNhDoxg0YFhQ26xA==}

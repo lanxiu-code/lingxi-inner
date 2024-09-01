@@ -10,8 +10,20 @@ export const useUserStore = defineStore('user', () => {
         if (res.data.code === ResponseCodeEnum.SUCCESS) {
             Object.assign(loginUser, res.data.data);
             //@ts-ignore
-            const cookie = res.headers['Set-Cookie'].split(';')[0];
+            console.log(res.headers);
+            let cookie = null;
+            if (res.headers.hasOwnProperty('set-cookie')) {
+                cookie = res.headers['set-cookie']?.split(';')[0];
+            } else {
+                cookie = res.headers['Set-Cookie']?.split(';')[0];
+            }
             uni.setStorageSync('cookie', cookie);
+        } else {
+            uni.showToast({
+                title: res.data.message,
+                duration: 1500,
+                icon: 'error'
+            });
         }
     };
     const getCurrentUser = async () => {

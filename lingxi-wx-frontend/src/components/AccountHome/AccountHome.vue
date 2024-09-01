@@ -7,7 +7,13 @@
             <view>
                 <van-row>
                     <van-col span="6">
-                        <van-image round width="80" height="80" :src="currentUser.avatarUrl" />
+                        <van-image
+                            fit="cover"
+                            round
+                            width="80"
+                            height="80"
+                            :src="currentUser.avatarUrl"
+                        />
                     </van-col>
                     <van-col span="15">
                         <text class="nickName">{{ currentUser.username }}</text>

@@ -99,6 +99,12 @@
 				"navigationBarTitleText": "用户注册",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/team/add/add",
+			"style": {
+				"navigationBarTitleText": "创建队伍"
+			}
 		}
 
 	],
@@ -158,7 +164,8 @@
 			"van-tab": "wxcomponents/vant/tab/index",
 			"van-tabs": "wxcomponents/vant/tabs/index",
 			"van-dialog": "wxcomponents/vant/dialog/index",
-			"van-slider": "wxcomponents/vant/slider/index"
+			"van-slider": "wxcomponents/vant/slider/index",
+			"van-stepper": "wxcomponents/vant/stepper/index"
 		},
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

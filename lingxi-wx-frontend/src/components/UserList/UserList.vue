@@ -17,7 +17,7 @@
         <view @click="toUserInfo(user.id)" v-for="user in userList" :key="user.id">
             <van-card :desc="user.userProfile" :title="user.username">
                 <view slot="thumb">
-                    <van-image width="80" height="80" round :src="user.avatarUrl" />
+                    <van-image fit="cover" width="80" height="80" round :src="user.avatarUrl" />
                 </view>
                 <view slot="tags">
                     <van-tag

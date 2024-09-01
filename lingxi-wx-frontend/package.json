@@ -59,6 +59,7 @@
 		"@dcloudio/uni-mp-weixin": "3.0.0-4020420240722002",
 		"@dcloudio/uni-mp-xhs": "3.0.0-4020420240722002",
 		"@dcloudio/uni-quickapp-webview": "3.0.0-4020420240722002",
+		"@vant/weapp": "^1.11.6",
 		"axios": "^1.7.4",
 		"dayjs": "^1.11.13",
 		"pinia": "^2.2.2",

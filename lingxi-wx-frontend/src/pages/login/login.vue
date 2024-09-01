@@ -46,8 +46,8 @@ import { reactive } from 'vue';
 import { useUserStore } from '@/store/user';
 const store = useUserStore();
 const loginInfo: API.UserLoginRequest = reactive({
-    userAccount: 'admin',
-    userPassword: '12345678'
+    userAccount: '',
+    userPassword: ''
 });
 const toRegister = () => {
     uni.reLaunch({
