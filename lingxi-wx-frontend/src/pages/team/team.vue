@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { reactive, ref, watch } from 'vue';
 import { listTeamVoByPage } from '@/servers/api/teamController';
 import { ResponseCodeEnum } from '@/enum/ResponseCodeEnum';
@@ -44,7 +44,11 @@ const loadData = async () => {
     }
 };
 watch([() => searchParams.status], () => loadData());
-onLoad(() => loadData());
+// onLoad(() => loadData());
+onShow(() => {
+    // console.log(123);
+    loadData();
+});
 </script>
 
 <style lang="scss">

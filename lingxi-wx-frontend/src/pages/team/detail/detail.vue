@@ -1,7 +1,7 @@
 <template>
     <view class="teamDetailPage">
         <view class="top">
-            <van-image round width="100" height="100" :src="teamObj.icon" />
+            <van-image fit="cover" round width="100" height="100" :src="teamObj.icon" />
             <view>{{ teamObj.name }}</view>
             <van-row>
                 <text style="margin-right: 10rpx">当前人数：{{ teamObj.currentNum }}</text>
