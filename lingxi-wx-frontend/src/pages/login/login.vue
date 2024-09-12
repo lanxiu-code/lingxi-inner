@@ -56,11 +56,6 @@ const toRegister = () => {
 };
 const submit = async () => {
     await store.doLogin(loginInfo);
-    if (store.loginUser.id) {
-        uni.switchTab({
-            url: '/pages/home/home'
-        });
-    }
 };
 </script>
 

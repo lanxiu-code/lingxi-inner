@@ -25,10 +25,13 @@ import com.lingxi.lingxibackend.model.vo.LoginUserVO;
 import com.lingxi.lingxibackend.model.vo.UserVO;
 import com.lingxi.lingxibackend.service.UserService;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import com.lingxi.lingxibackend.utils.RedisUtil;
+import com.lingxi.lingxibackend.websocket.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +52,17 @@ public class UserController {
     private RedisUtil redisUtil;
     private static final String SALT = "lingxi";
 
+    @Resource
+    private JwtUtils jwtUtils;
+    /*
+    * 获取token
+    * */
+    @GetMapping("/token")
+    public BaseResponse<String> getToken(HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        String token = jwtUtils.createToken(loginUser.getId());
+        return ResultUtils.success(token);
+    }
     // region 登录相关
     /**
      * 用户注册
@@ -212,7 +226,20 @@ public class UserController {
         User user = response.getData();
         return ResultUtils.success(userService.getUserVO(user));
     }
-
+    /**
+     * 根据 id数组 获取包装类
+     *
+     * @param id
+     * @param request
+     * @return
+     */
+    @PostMapping("/vo/batch")
+    public BaseResponse<List<UserVO>> getUserVOBatch(@RequestBody List<Long> ids, HttpServletRequest request) {
+        userService.getLoginUser(request);
+        List<UserVO> userVOList = userService.listByIds(ids)
+                .stream().map(UserVO::objToVo).collect(Collectors.toList());
+        return ResultUtils.success(userVOList);
+    }
     /**
      * 分页获取用户列表（仅管理员）
      *

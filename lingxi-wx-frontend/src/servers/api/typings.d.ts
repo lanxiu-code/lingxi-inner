@@ -1,375 +1,497 @@
 declare namespace API {
-    type BaseResponseBoolean = {
-        code?: number;
-        data?: boolean;
-        message?: string;
-    };
+  type BaseResponseBoolean = {
+    code?: number;
+    data?: boolean;
+    message?: string;
+  };
 
-    type BaseResponseListUserVO = {
-        code?: number;
-        data?: UserVO[];
-        message?: string;
-    };
+  type BaseResponseChatMessageResp = {
+    code?: number;
+    data?: ChatMessageResp;
+    message?: string;
+  };
 
-    type BaseResponseLoginUserVO = {
-        code?: number;
-        data?: LoginUserVO;
-        message?: string;
-    };
+  type BaseResponseChatRoomResp = {
+    code?: number;
+    data?: ChatRoomResp;
+    message?: string;
+  };
 
-    type BaseResponseLong = {
-        code?: number;
-        data?: number;
-        message?: string;
-    };
+  type BaseResponseCursorPageBaseRespChatMessageResp = {
+    code?: number;
+    data?: CursorPageBaseRespChatMessageResp;
+    message?: string;
+  };
 
-    type BaseResponsePageTagVO = {
-        code?: number;
-        data?: PageTagVO;
-        message?: string;
-    };
+  type BaseResponseCursorPageBaseRespChatRoomResp = {
+    code?: number;
+    data?: CursorPageBaseRespChatRoomResp;
+    message?: string;
+  };
 
-    type BaseResponsePageTeamVO = {
-        code?: number;
-        data?: PageTeamVO;
-        message?: string;
-    };
+  type BaseResponseListUserVO = {
+    code?: number;
+    data?: UserVO[];
+    message?: string;
+  };
 
-    type BaseResponsePageUser = {
-        code?: number;
-        data?: PageUser;
-        message?: string;
-    };
+  type BaseResponseLoginUserVO = {
+    code?: number;
+    data?: LoginUserVO;
+    message?: string;
+  };
 
-    type BaseResponsePageUserVO = {
-        code?: number;
-        data?: PageUserVO;
-        message?: string;
-    };
+  type BaseResponseLong = {
+    code?: number;
+    data?: number;
+    message?: string;
+  };
 
-    type BaseResponseString = {
-        code?: number;
-        data?: string;
-        message?: string;
-    };
+  type BaseResponsePageTagVO = {
+    code?: number;
+    data?: PageTagVO;
+    message?: string;
+  };
 
-    type BaseResponseTagVO = {
-        code?: number;
-        data?: TagVO;
-        message?: string;
-    };
+  type BaseResponsePageTeamVO = {
+    code?: number;
+    data?: PageTeamVO;
+    message?: string;
+  };
 
-    type BaseResponseTeamVO = {
-        code?: number;
-        data?: TeamVO;
-        message?: string;
-    };
+  type BaseResponsePageUser = {
+    code?: number;
+    data?: PageUser;
+    message?: string;
+  };
 
-    type BaseResponseUser = {
-        code?: number;
-        data?: User;
-        message?: string;
-    };
+  type BaseResponsePageUserVO = {
+    code?: number;
+    data?: PageUserVO;
+    message?: string;
+  };
 
-    type BaseResponseUserVO = {
-        code?: number;
-        data?: UserVO;
-        message?: string;
-    };
+  type BaseResponseString = {
+    code?: number;
+    data?: string;
+    message?: string;
+  };
 
-    type checkParams = {
-        timestamp: string;
-        nonce: string;
-        signature: string;
-        echostr: string;
-    };
+  type BaseResponseTagVO = {
+    code?: number;
+    data?: TagVO;
+    message?: string;
+  };
 
-    type DeleteRequest = {
-        id?: number;
-    };
+  type BaseResponseTeamVO = {
+    code?: number;
+    data?: TeamVO;
+    message?: string;
+  };
 
-    type getTagVOByIdParams = {
-        id: number;
-    };
+  type BaseResponseUser = {
+    code?: number;
+    data?: User;
+    message?: string;
+  };
 
-    type getTeamVOByIdParams = {
-        id: number;
-    };
+  type BaseResponseUserVO = {
+    code?: number;
+    data?: UserVO;
+    message?: string;
+  };
 
-    type getUserByIdParams = {
-        id: number;
-    };
+  type BaseResponseVoid = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
 
-    type getUserVOByIdParams = {
-        id: number;
-    };
+  type ChatMessageMemberReq = {
+    roomId: number;
+  };
 
-    type listUserVOParams = {
-        teamId: number;
-    };
+  type ChatMessagePageReq = {
+    pageSize?: number;
+    cursor?: string;
+    roomId: number;
+  };
 
-    type LoginUserVO = {
-        id?: number;
-        username?: string;
-        userProfile?: string;
-        avatarUrl?: string;
-        gender?: number;
-        phone?: string;
-        email?: string;
-        userStatus?: number;
-        userRole?: number;
-        tags?: string;
-        createTime?: string;
-        updateTime?: string;
-    };
+  type ChatMessageReq = {
+    roomId: number;
+    msgType: number;
+    body: Record<string, any>;
+  };
 
-    type matchUsersParams = {
-        num: number;
-    };
+  type ChatMessageResp = {
+    fromUser?: UserInfo;
+    message?: MessageInfo;
+  };
 
-    type OrderItem = {
-        column?: string;
-        asc?: boolean;
-    };
+  type ChatRoomResp = {
+    roomId?: number;
+    type?: number;
+    hot_Flag?: number;
+    text?: string;
+    name?: string;
+    avatar?: string;
+    activeTime?: string;
+    unreadCount?: number;
+  };
 
-    type PageTagVO = {
-        records?: TagVO[];
-        total?: number;
-        size?: number;
-        current?: number;
-        orders?: OrderItem[];
-        optimizeCountSql?: boolean;
-        searchCount?: boolean;
-        optimizeJoinOfCountSql?: boolean;
-        countId?: string;
-        maxLimit?: number;
-        pages?: number;
-    };
+  type checkParams = {
+    timestamp: string;
+    nonce: string;
+    signature: string;
+    echostr: string;
+  };
 
-    type PageTeamVO = {
-        records?: TeamVO[];
-        total?: number;
-        size?: number;
-        current?: number;
-        orders?: OrderItem[];
-        optimizeCountSql?: boolean;
-        searchCount?: boolean;
-        optimizeJoinOfCountSql?: boolean;
-        countId?: string;
-        maxLimit?: number;
-        pages?: number;
-    };
+  type CursorPageBaseReq = {
+    pageSize?: number;
+    cursor?: string;
+  };
 
-    type PageUser = {
-        records?: User[];
-        total?: number;
-        size?: number;
-        current?: number;
-        orders?: OrderItem[];
-        optimizeCountSql?: boolean;
-        searchCount?: boolean;
-        optimizeJoinOfCountSql?: boolean;
-        countId?: string;
-        maxLimit?: number;
-        pages?: number;
-    };
+  type CursorPageBaseRespChatMessageResp = {
+    cursor?: string;
+    isLast?: boolean;
+    list?: ChatMessageResp[];
+  };
 
-    type PageUserVO = {
-        records?: UserVO[];
-        total?: number;
-        size?: number;
-        current?: number;
-        orders?: OrderItem[];
-        optimizeCountSql?: boolean;
-        searchCount?: boolean;
-        optimizeJoinOfCountSql?: boolean;
-        countId?: string;
-        maxLimit?: number;
-        pages?: number;
-    };
+  type CursorPageBaseRespChatRoomResp = {
+    cursor?: string;
+    isLast?: boolean;
+    list?: ChatRoomResp[];
+  };
 
-    type searchUsersParams = {
-        tags?: string[];
-    };
+  type DeleteRequest = {
+    id?: number;
+  };
 
-    type TagAddRequest = {
-        tagName?: string;
-        parentId?: number;
-        isParent?: number;
-    };
+  type FriendApplyReq = {
+    msg: string;
+    targetUid: number;
+  };
 
-    type TagEditRequest = {
-        id?: number;
-        tagName?: string;
-        parentId?: number;
-        isParent?: number;
-    };
+  type getContactDetailParams = {
+    idReqVO: IdReqVO;
+  };
 
-    type TagQueryRequest = {
-        current?: number;
-        pageSize?: number;
-        sortField?: string;
-        sortOrder?: string;
-        tagName?: string;
-        isParent?: number;
-        userId?: number;
-    };
+  type getMsgPageParams = {
+    messagePageReq: ChatMessagePageReq;
+  };
 
-    type TagVO = {
-        id?: number;
-        tagName?: string;
-        userId?: number;
-        parentId?: number;
-        isParent?: number;
-        createTime?: string;
-        updateTime?: string;
-        user?: UserVO;
-    };
+  type getRoomPageParams = {
+    pageBaseReq: CursorPageBaseReq;
+  };
 
-    type TeamAddRequest = {
-        name?: string;
-        description?: string;
-        maxNum?: number;
-        icon?: string;
-        expireTime?: string;
-        status?: number;
-        password?: string;
-    };
+  type getTagVOByIdParams = {
+    id: number;
+  };
 
-    type TeamEditRequest = {
-        id?: number;
-        name?: string;
-        description?: string;
-        maxNum?: number;
-        expireTime?: string;
-        userId?: number;
-        status?: number;
-        password?: string;
-    };
+  type getTeamVOByIdParams = {
+    id: number;
+  };
 
-    type TeamJoinRequest = {
-        teamId?: number;
-        password?: string;
-    };
+  type getUserByIdParams = {
+    id: number;
+  };
 
-    type TeamQueryRequest = {
-        current?: number;
-        pageSize?: number;
-        sortField?: string;
-        sortOrder?: string;
-        id?: number;
-        name?: string;
-        maxNum?: number;
-        userId?: number;
-        status?: number;
-    };
+  type getUserVOByIdParams = {
+    id: number;
+  };
 
-    type TeamQuitRequest = {
-        teamId?: number;
-    };
+  type IdReqVO = {
+    id: number;
+  };
 
-    type TeamVO = {
-        id?: number;
-        name?: string;
-        icon?: string;
-        description?: string;
-        currentNum?: number;
-        maxNum?: number;
-        hasJoin?: boolean;
-        expireTime?: string;
-        userId?: number;
-        status?: number;
-        createTime?: string;
-        updateTime?: string;
-        user?: UserVO;
-    };
+  type listUserVOParams = {
+    teamId: number;
+  };
 
-    type uploadFileParams = {
-        uploadFileRequest: UploadFileRequest;
-    };
+  type LoginUserVO = {
+    id?: number;
+    username?: string;
+    userProfile?: string;
+    avatarUrl?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    userStatus?: number;
+    userRole?: number;
+    ipInfo?: Record<string, any>;
+    status?: number;
+    activeStatus?: number;
+    lastOptTime?: string;
+    tags?: string;
+    createTime?: string;
+    updateTime?: string;
+  };
 
-    type UploadFileRequest = {
-        biz?: string;
-    };
+  type matchUsersParams = {
+    num: number;
+  };
 
-    type User = {
-        id?: number;
-        username?: string;
-        userAccount?: string;
-        userPassword?: string;
-        userProfile?: string;
-        avatarUrl?: string;
-        gender?: number;
-        phone?: string;
-        email?: string;
-        userStatus?: number;
-        userRole?: number;
-        tags?: string;
-        createTime?: string;
-        updateTime?: string;
-        isDelete?: number;
-    };
+  type MessageInfo = {
+    id?: number;
+    roomId?: number;
+    sendTime?: string;
+    type?: number;
+    body?: Record<string, any>;
+  };
 
-    type UserAddRequest = {
-        userName?: string;
-        userAccount?: string;
-        avatarUrl?: string;
-        userRole?: number;
-    };
+  type OrderItem = {
+    column?: string;
+    asc?: boolean;
+  };
 
-    type UserLoginRequest = {
-        userAccount?: string;
-        userPassword?: string;
-    };
+  type PageTagVO = {
+    records?: TagVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: boolean;
+    searchCount?: boolean;
+    optimizeJoinOfCountSql?: boolean;
+    countId?: string;
+    maxLimit?: number;
+    pages?: number;
+  };
 
-    type UserQueryRequest = {
-        current?: number;
-        pageSize?: number;
-        sortField?: string;
-        sortOrder?: string;
-        id?: number;
-        username?: string;
-        gender?: number;
-        userStatus?: number;
-    };
+  type PageTeamVO = {
+    records?: TeamVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: boolean;
+    searchCount?: boolean;
+    optimizeJoinOfCountSql?: boolean;
+    countId?: string;
+    maxLimit?: number;
+    pages?: number;
+  };
 
-    type UserRegisterRequest = {
-        userAccount?: string;
-        userPassword?: string;
-        checkPassword?: string;
-    };
+  type PageUser = {
+    records?: User[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: boolean;
+    searchCount?: boolean;
+    optimizeJoinOfCountSql?: boolean;
+    countId?: string;
+    maxLimit?: number;
+    pages?: number;
+  };
 
-    type UserUpdateMyRequest = {
-        username?: string;
-        userPassword?: string;
-        userProfile?: string;
-        avatarUrl?: string;
-        gender?: number;
-        phone?: string;
-        email?: string;
-        tags?: string;
-    };
+  type PageUserVO = {
+    records?: UserVO[];
+    total?: number;
+    size?: number;
+    current?: number;
+    orders?: OrderItem[];
+    optimizeCountSql?: boolean;
+    searchCount?: boolean;
+    optimizeJoinOfCountSql?: boolean;
+    countId?: string;
+    maxLimit?: number;
+    pages?: number;
+  };
 
-    type UserUpdateRequest = {
-        id?: number;
-        userName?: string;
-        userAvatar?: string;
-        userProfile?: string;
-        userRole?: string;
-    };
+  type searchUsersParams = {
+    tags?: string[];
+  };
 
-    type UserVO = {
-        id?: number;
-        username?: string;
-        userProfile?: string;
-        avatarUrl?: string;
-        gender?: number;
-        phone?: string;
-        email?: string;
-        userStatus?: number;
-        userRole?: number;
-        tags?: string;
-        createTime?: string;
-        updateTime?: string;
-    };
+  type TagAddRequest = {
+    tagName?: string;
+    parentId?: number;
+    isParent?: number;
+  };
+
+  type TagEditRequest = {
+    id?: number;
+    tagName?: string;
+    parentId?: number;
+    isParent?: number;
+  };
+
+  type TagQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    tagName?: string;
+    isParent?: number;
+    userId?: number;
+  };
+
+  type TagVO = {
+    id?: number;
+    tagName?: string;
+    userId?: number;
+    parentId?: number;
+    isParent?: number;
+    createTime?: string;
+    updateTime?: string;
+    user?: UserVO;
+  };
+
+  type TeamAddRequest = {
+    name?: string;
+    icon?: string;
+    description?: string;
+    maxNum?: number;
+    expireTime?: string;
+    status?: number;
+    password?: string;
+  };
+
+  type TeamEditRequest = {
+    id?: number;
+    name?: string;
+    description?: string;
+    maxNum?: number;
+    expireTime?: string;
+    userId?: number;
+    status?: number;
+    password?: string;
+  };
+
+  type TeamJoinRequest = {
+    teamId?: number;
+    password?: string;
+  };
+
+  type TeamQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    userId?: number;
+    name?: string;
+    status?: number;
+  };
+
+  type TeamQuitRequest = {
+    teamId?: number;
+  };
+
+  type TeamVO = {
+    id?: number;
+    name?: string;
+    icon?: string;
+    description?: string;
+    currentNum?: number;
+    maxNum?: number;
+    hasJoin?: boolean;
+    expireTime?: string;
+    userId?: number;
+    status?: number;
+    createTime?: string;
+    updateTime?: string;
+    user?: UserVO;
+  };
+
+  type uploadFileParams = {
+    uploadFileRequest: UploadFileRequest;
+  };
+
+  type UploadFileRequest = {
+    biz?: string;
+  };
+
+  type User = {
+    id?: number;
+    username?: string;
+    userAccount?: string;
+    userPassword?: string;
+    userProfile?: string;
+    avatarUrl?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    userStatus?: number;
+    userRole?: number;
+    tags?: string;
+    ipInfo?: Record<string, any>;
+    status?: number;
+    activeStatus?: number;
+    lastOptTime?: string;
+    createTime?: string;
+    updateTime?: string;
+    isDelete?: number;
+  };
+
+  type UserAddRequest = {
+    userName?: string;
+    userAccount?: string;
+    avatarUrl?: string;
+    userRole?: number;
+  };
+
+  type UserInfo = {
+    uid?: string;
+  };
+
+  type UserLoginRequest = {
+    userAccount?: string;
+    userPassword?: string;
+  };
+
+  type UserQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    id?: number;
+    username?: string;
+    gender?: number;
+    userStatus?: number;
+  };
+
+  type UserRegisterRequest = {
+    userAccount?: string;
+    userPassword?: string;
+    checkPassword?: string;
+  };
+
+  type UserUpdateMyRequest = {
+    username?: string;
+    userPassword?: string;
+    userProfile?: string;
+    avatarUrl?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    tags?: string;
+  };
+
+  type UserUpdateRequest = {
+    id?: number;
+    userName?: string;
+    userAvatar?: string;
+    userProfile?: string;
+    userRole?: string;
+  };
+
+  type UserVO = {
+    id?: number;
+    username?: string;
+    userProfile?: string;
+    avatarUrl?: string;
+    gender?: number;
+    phone?: string;
+    email?: string;
+    userStatus?: number;
+    userRole?: number;
+    tags?: string;
+    ipInfo?: Record<string, any>;
+    status?: number;
+    activeStatus?: number;
+    lastOptTime?: string;
+    createTime?: string;
+    updateTime?: string;
+  };
 }

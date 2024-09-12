@@ -26,6 +26,7 @@ import com.lingxi.lingxibackend.utils.AlgorithmUtils;
 import com.lingxi.lingxibackend.utils.SqlUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -307,5 +308,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             finalUserList.add(userIdUserListMap.get(userId).get(0));
         }
         return finalUserList;
+    }
+
+    @Override
+    public Map<Long, UserVO> getUserVOBatch(Collection<Long> userIds) {
+        return this.listByIds(userIds)
+                .stream()
+                .map(UserVO::objToVo)
+                .collect(Collectors.toMap(UserVO::getId, Function.identity()));
     }
 }

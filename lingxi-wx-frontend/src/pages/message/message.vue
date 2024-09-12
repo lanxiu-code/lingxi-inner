@@ -1,13 +1,18 @@
+<script setup>
+import { ref, reactive } from 'vue';
+</script>
+
 <template>
     <view class="messagePage">
-        <GlobalNoticeBar text="此页面待开发中..." />
+        <ChatSession />
     </view>
 </template>
 
-<script setup></script>
-
 <style lang="scss">
 .messagePage {
+    background-color: #272a37;
     height: 100%;
+    padding: 10rpx;
+    box-sizing: border-box;
 }
 </style>

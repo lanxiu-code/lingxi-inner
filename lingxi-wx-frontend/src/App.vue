@@ -5,11 +5,6 @@ const store = useUserStore();
 onLaunch(async () => {
     console.log('App Launch');
     await store.getCurrentUser();
-    if (store.loginUser.id) {
-        uni.switchTab({
-            url: '/pages/home/home'
-        });
-    }
 });
 onShow(() => {
     console.log('App Show');

@@ -6,7 +6,10 @@ import com.lingxi.lingxibackend.model.dto.user.UserQueryRequest;
 import com.lingxi.lingxibackend.model.entity.User;
 import com.lingxi.lingxibackend.model.vo.LoginUserVO;
 import com.lingxi.lingxibackend.model.vo.UserVO;
+
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 
@@ -119,4 +122,6 @@ public interface UserService extends IService<User> {
      * 获取最匹配的用户
      * */
     List<UserVO> matchUsers(long num, User loginUser);
+    // 批量获取用户
+    Map<Long, UserVO> getUserVOBatch(Collection<Long> userIds);
 }

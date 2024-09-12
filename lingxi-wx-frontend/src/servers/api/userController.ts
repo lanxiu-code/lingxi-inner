@@ -156,6 +156,14 @@ export async function searchUsers(
   });
 }
 
+/** 此处后端没有提供注释 GET /user/token */
+export async function getToken(options?: { [key: string]: any }) {
+  return request<API.BaseResponseString>('/user/token', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /user/update */
 export async function updateUser(body: API.UserUpdateRequest, options?: { [key: string]: any }) {
   return request<API.BaseResponseBoolean>('/user/update', {
@@ -174,6 +182,18 @@ export async function updateMyUser(
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponseBoolean>('/user/update/my', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 POST /user/vo/batch */
+export async function getUserVoBatch(body: number[], options?: { [key: string]: any }) {
+  return request<API.BaseResponseListUserVO>('/user/vo/batch', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

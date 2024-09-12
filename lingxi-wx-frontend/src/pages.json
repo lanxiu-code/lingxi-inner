@@ -105,6 +105,19 @@
 			"style": {
 				"navigationBarTitleText": "创建队伍"
 			}
+		},
+		{
+			"path": "pages/message/chatBox/chatBox",
+			"style": {
+				"navigationBarTitleText": "聊天页面"
+			}
+		},
+		{
+			"path" : "pages/virtualListTest/virtualListTest",
+			"style" : 
+			{
+				"navigationBarTitleText" : "虚拟列表测试"
+			}
 		}
 
 	],

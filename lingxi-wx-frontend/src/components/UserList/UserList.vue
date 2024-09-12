@@ -9,6 +9,8 @@
         :refresher-enabled="false"
         loading-more-no-more-text="我也是有底线的！"
         auto-show-back-to-top
+        :force-close-inner-list="true"
+        cell-height-mode="dynamic"
         safe-area-inset-bottom
     >
         <template #top>
