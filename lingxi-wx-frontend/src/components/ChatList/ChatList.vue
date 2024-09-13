@@ -61,6 +61,10 @@ const messageOptions = computed(() => chatStore.currentMessageOptions);
 const newMsgFlag = ref(false);
 const virtualListChange = (vList) => {
     dataList.value = vList;
+    const lastMsg = dataList.value[0];
+    if (lastMsg) {
+        chatStore.currentLastMessageMap.set(lastMsg.message.id * 1, lastMsg);
+    }
 };
 const queryList = (pageNo, pageSize) => {
     if (messageOptions.value.isLast) {

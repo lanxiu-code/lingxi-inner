@@ -7,6 +7,7 @@
         preload-page="5"
         loading-more-no-more-text="我也是有底线的！"
         :force-close-inner-list="true"
+        :auto-clean-list-when-reload="false"
         cell-height-mode="dynamic"
         auto-show-back-to-top
     >
@@ -56,8 +57,9 @@ const chatStore = useChatStore();
 const sessionList = computed(() =>
     chatStore.sessionList.map((item) => {
         // 最后一条消息内容
-        const lastMsg = Array.from(chatStore.messageMap.get(item.roomId)?.values() || [])[0];
-        console.log(lastMsg);
+        const lastMsg = Array.from(chatStore.lastMessageMap.get(item.roomId)?.values() || []).slice(
+            -1
+        )[0];
         let LastUserMsg = '';
         if (lastMsg) {
             const lastMsgUserName = lastMsg.fromUser;
@@ -116,8 +118,12 @@ const queryList = (current, pageSize) => {
     chatStore.getSessionList();
     paging.value.complete(sessionList.value);
 };
-
+uni.$on('updateUnReadCount', () => {
+    globalStore.currentSession.roomId = null;
+    paging.value?.reload();
+});
 onShow(() => {
+    globalStore.currentSession.roomId = null;
     paging?.value?.reload();
 });
 </script>

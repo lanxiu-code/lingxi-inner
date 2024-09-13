@@ -17,28 +17,28 @@ export const useChatStore = defineStore('chat', () => {
     const sessionOptions = reactive({ isLast: false, cursor: undefined });
     const globalStore = useGlobalStore();
     const cachedStore = useCachedStore();
+
     const currentRoomId = computed(() => globalStore.currentSession?.roomId);
     const currentRoomType = computed(() => globalStore.currentSession?.type);
-    // 将消息列表转换为数组
-    const chatMessageList = computed(() => [...(currentMessageMap.value?.values() || [])]);
-    // 消息Map
-    const messageMap = reactive<Map<number, Map<number, MessageType>>>(
+    const chatLastMsg = computed(() => [...(currentLastMessageMap.value?.values() || [])]);
+    // 最后一条消息Map
+    const lastMessageMap = reactive<Map<number, Map<number, MessageType>>>(
         new Map([[currentRoomId.value, new Map()]])
     );
     const messageOptions = reactive<
         Map<number, { isLast: boolean; isLoading: boolean; cursor: string }>
     >(new Map([[currentRoomId.value, { isLast: false, isLoading: false, cursor: '' }]]));
-    // 回复消息映射
-    const currentMessageMap = computed({
+    // 消息映射
+    const currentLastMessageMap = computed({
         get: () => {
-            const current = messageMap.get(currentRoomId.value as number);
+            const current = lastMessageMap.get(currentRoomId.value as number);
             if (current === undefined) {
-                messageMap.set(currentRoomId.value, new Map());
+                lastMessageMap.set(currentRoomId.value, new Map());
             }
-            return messageMap.get(currentRoomId.value as number);
+            return lastMessageMap.get(currentRoomId.value as number);
         },
         set: (val) => {
-            messageMap.set(currentRoomId.value, val as Map<number, MessageType>);
+            lastMessageMap.set(currentRoomId.value * 1, val as Map<number, MessageType>);
         }
     });
     const currentMessageOptions = computed({
@@ -81,7 +81,6 @@ export const useChatStore = defineStore('chat', () => {
         });
         // 获取用户信息缓存
         cachedStore.getBatchUserInfo([...uidCollectYet]);
-
         if (currentMessageOptions.value) {
             currentMessageOptions.value.cursor = data.cursor;
             currentMessageOptions.value.isLast = data.isLast;
@@ -116,8 +115,8 @@ export const useChatStore = defineStore('chat', () => {
         sortAndUniqueSessionList();
         if (!isFirstInit) {
             isFirstInit = true;
-            globalStore.currentSession.roomId = data.list[0].roomId;
-            globalStore.currentSession.type = data.list[0].type;
+            // globalStore.currentSession.roomId = data.list[0].roomId;
+            // globalStore.currentSession.type = data.list[0].type;
         }
     };
     // 标记已读数为 0
@@ -143,30 +142,31 @@ export const useChatStore = defineStore('chat', () => {
         sortAndUniqueSessionList();
     };
     const pushMsg = async (msg: MessageType) => {
-        const current = messageMap.get(msg.message.roomId);
+        const current = lastMessageMap.get(msg.message.roomId);
         current?.set(msg.message.id, msg);
         uni.$emit('updateMsgList');
+        lastMessageMap.set(msg.message.roomId, new Map([[msg.message.id, msg]]));
+        globalStore.currentSession.roomId = msg.message.roomId;
         // 发完消息就要刷新会话列表，
         // 如果当前会话已经置顶了，可以不用刷新
-        if (
-            globalStore.currentSession &&
-            globalStore.currentSession.roomId !== msg.message.roomId
-        ) {
+        if (globalStore.currentSession && globalStore.currentSession.roomId != msg.message.roomId) {
             let result = undefined;
             if (!current) {
                 result = await getContactDetail({ id: msg.message.roomId });
             }
+            console.log(result);
             updateSessionLastActiveTime(msg.message.roomId, result.data.data);
         }
         // 聊天记录计数
-        if (currentRoomId.value !== msg.message.roomId) {
-            const index = sessionList.value.findIndex((item) => item.roomId === msg.message.roomId);
+        if (currentRoomId.value != msg.message.roomId) {
+            const index = sessionList.value.findIndex((item) => item.roomId == msg.message.roomId);
             const item = sessionList.value[index];
             if (item) {
                 item.unreadCount += 1;
                 sessionList.value[index] = item;
             }
         }
+        uni.$emit('updateUnReadCount');
     };
     /** 会话列表去重并排序 */
     const sortAndUniqueSessionList = () => {
@@ -178,12 +178,13 @@ export const useChatStore = defineStore('chat', () => {
     return {
         getSessionList,
         sessionList,
-        chatMessageList,
+        chatLastMsg,
         pushMsg,
         getMsgList,
-        messageMap,
+        lastMessageMap,
         currentRoomId,
         currentMessageOptions,
+        currentLastMessageMap,
         markSessionRead
     };
 });
