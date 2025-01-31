@@ -8,17 +8,17 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sh-cynosdbmysql-grp-7srr6mpi.sql.tencentcdb.com:29063/lingxi?serverTimezone=Asia/Shanghai
-    username: root
-    password: Landada@20031125
+    url: xxx
+    username: xxx
+    password: xxx
   # Redis 配置
   
   redis:
     database: 1
-    host: 8.137.105.75
+    host: xxx
     port: 6379
     timeout: 5000
-    password: lingxi@12345678
+    password: xxx
   # Elasticsearch 配置
   
   elasticsearch:
