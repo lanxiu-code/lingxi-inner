@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingxi.lingxibackend.websocket.mapper.ContactMapper">
+
+    <resultMap id="BaseResultMap" type="com.lingxi.lingxibackend.websocket.domain.entity.Contact">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="uid" column="uid" jdbcType="BIGINT"/>
+            <result property="roomId" column="room_id" jdbcType="BIGINT"/>
+            <result property="readTime" column="read_time" jdbcType="TIMESTAMP"/>
+            <result property="activeTime" column="active_time" jdbcType="TIMESTAMP"/>
+            <result property="lastMsgId" column="last_msg_id" jdbcType="BIGINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,uid,room_id,
+        read_time,active_time,last_msg_id,
+        create_time,update_time
+    </sql>
+
+    <insert id="refreshOrCreateActiveTime">
+        insert into contact(`roomId`,`uid`,`lastMsgId`,`activeTime`)
+        values
+        <foreach collection="memberUidList" item="uid" separator=",">
+            (#{roomId},#{uid},#{msgId},#{activeTime})
+        </foreach>
+        on DUPLICATE KEY UPDATE
+        `lastMsgId`=VALUES(lastMsgId),
+        `activeTime`=VALUES(activeTime)
+    </insert>
+</mapper>

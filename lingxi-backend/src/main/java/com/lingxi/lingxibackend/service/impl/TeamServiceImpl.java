@@ -61,6 +61,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
     private static final String LOCK_TEAM_KEY = "lingxi:join:team:key";
     @Override
     public TeamVO getTeamVO(Team team, HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
         TeamVO teamVO = TeamVO.objToVo(team);
         // 1. 关联查询用户信息
         Long userId = team.getUserId();
@@ -70,6 +71,14 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         }
         UserVO userVO = userService.getUserVO(user);
         teamVO.setUser(userVO);
+        List<Long> teamIds = userTeamService.list(Wrappers.lambdaQuery(UserTeam.class)
+                        .eq(UserTeam::getUserId, loginUser.getId()))
+                        .stream()
+                        .map(UserTeam::getTeamId)
+                        .collect(Collectors.toList());
+        int userCount = userTeamService.getTeamUserCount(teamVO.getId());
+        teamVO.setCurrentNum(userCount);
+        teamVO.setHasJoin(teamIds.contains(teamVO.getId()));
         return teamVO;
     }
 
@@ -81,7 +90,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         }
         String teamName = teamQueryRequest.getName();
         Long userId = teamQueryRequest.getUserId();
-        Integer maxNum = teamQueryRequest.getMaxNum();
         Integer status = teamQueryRequest.getStatus();
         String sortField = teamQueryRequest.getSortField();
         String sortOrder = teamQueryRequest.getSortOrder();
@@ -89,7 +97,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         queryWrapper.like(StringUtils.isNotBlank(teamName), "name", teamName)
                 .or().like(StringUtils.isNotBlank(teamName), "description", teamName);
         queryWrapper.eq(ObjectUtil.isNotNull(userId), "userId", userId);
-        queryWrapper.eq(ObjectUtil.isNotNull(maxNum) && maxNum > 0, "maxNum", maxNum);
         TeamStatusEnum statusEnum = TeamStatusEnum.getEnumByValue(status);
         if(statusEnum==null){
             statusEnum = TeamStatusEnum.PUBLIC;
@@ -121,6 +128,8 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 user = userIdUserListMap.get(userId).get(0);
             }
             teamVO.setUser(userService.getUserVO(user));
+            int userCount = userTeamService.getTeamUserCount(teamVO.getId());
+            teamVO.setCurrentNum(userCount);
             return teamVO;
         }).collect(Collectors.toList());
         teamVOPage.setRecords(teamVOList);
@@ -268,8 +277,18 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         Page<UserTeam> userTeamPage = userTeamService.page(new Page<>(current, size), Wrappers.lambdaQuery(UserTeam.class)
                 .eq(UserTeam::getUserId, teamQueryRequest.getUserId()));
 
-        List<Long> teamIdList = userTeamPage.getRecords().stream().map(UserTeam::getTeamId).collect(Collectors.toList());
-        List<Team> teamList = this.listByIds(teamIdList);
+        List<Long> teamIdList = userTeamPage.getRecords().stream()
+                .map(UserTeam::getTeamId)
+                .collect(Collectors.toList());
+        Integer teamQueryRequestStatus = teamQueryRequest.getStatus();
+        TeamStatusEnum teamStatusEnum = TeamStatusEnum.getEnumByValue(teamQueryRequestStatus);
+        if(ObjectUtil.isNull(teamStatusEnum)){
+            teamStatusEnum = TeamStatusEnum.PUBLIC;
+        }
+        TeamStatusEnum finalTeamStatusEnum = teamStatusEnum;
+        List<Team> teamList = this.listByIds(teamIdList).stream()
+                .filter(team -> team.getStatus().equals(finalTeamStatusEnum.getValue()))
+                .collect(Collectors.toList());
         Page<Team> teamPage = new Page<>(current,size,userTeamPage.getTotal());
         teamPage.setRecords(teamList);
         return this.getTeamVOPage(teamPage, request);

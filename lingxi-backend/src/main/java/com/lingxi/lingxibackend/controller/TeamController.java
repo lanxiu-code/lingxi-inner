@@ -157,6 +157,8 @@ public class TeamController {
                 UserRoleEnum userRoleEnum = UserRoleEnum.getEnumByValue(userRole);
                 return userRoleEnum == UserRoleEnum.ADMIN || ObjectUtil.equals(userVO.getId(), teamVO.getUserId());
             }
+            int userCount = userTeamService.getTeamUserCount(teamVO.getId());
+            teamVO.setCurrentNum(userCount);
             return true;
         }).collect(Collectors.toList());
         teamVOPage.setRecords(teamVOS);
@@ -177,7 +179,6 @@ public class TeamController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);
-        teamQueryRequest.setUserId(loginUser.getId());
         long current = teamQueryRequest.getCurrent();
         long size = teamQueryRequest.getPageSize();
         // 限制爬虫
@@ -196,7 +197,6 @@ public class TeamController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);
-        teamQueryRequest.setUserId(loginUser.getId());
         return ResultUtils.success(teamService.listMyJoinTeamVOByPage(teamQueryRequest,request));
 
     }
@@ -253,5 +253,22 @@ public class TeamController {
         User loginUser = userService.getLoginUser(request);
         boolean res = teamService.quitTeam(teamQuitRequest, loginUser);
         return ResultUtils.success(res);
+    }
+    /*
+    * 获取队伍成员
+    * */
+    @GetMapping("/user/list/vo")
+    public BaseResponse<List<UserVO>> listUserVO(long teamId,HttpServletRequest request) {
+        if (teamId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QueryWrapper<UserTeam> wrapper = new QueryWrapper<>();
+        wrapper.eq("teamId",teamId);
+        List<Long> userIdList = userTeamService.list(wrapper)
+                .stream().map(UserTeam::getUserId).collect(Collectors.toList());
+        List<UserVO> userVOS = userService.listByIds(userIdList).stream()
+                .map(UserVO::objToVo)
+                .collect(Collectors.toList());
+        return ResultUtils.success(userVOS);
     }
 }

@@ -26,10 +26,14 @@ import com.lingxi.lingxibackend.utils.AlgorithmUtils;
 import com.lingxi.lingxibackend.utils.SqlUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.lingxi.lingxibackend.websocket.domain.entity.UserFriend;
+import com.lingxi.lingxibackend.websocket.service.UserFriendService;
+import com.lingxi.lingxibackend.websocket.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +47,8 @@ import org.springframework.util.DigestUtils;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+    @Resource
+    private UserMapper userMapper;
     /**
      * 盐值，混淆密码
      */
@@ -77,6 +83,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            user.setAvatarUrl("https://img0.baidu.com/it/u=3860090450,2781056586&fm=253&fmt=auto?w=400&h=400");
+            user.setUsername("蓝友");
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
@@ -196,7 +204,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         LoginUserVO loginUserVO = new LoginUserVO();
+        Integer countFans = userMapper.countFans(user.getId());
+        Integer countFollow = userMapper.countFollow(user.getId());
         BeanUtils.copyProperties(user, loginUserVO);
+        loginUserVO.setFollowCount(countFollow);
+        loginUserVO.setFansCount(countFans);
         return loginUserVO;
     }
 
@@ -305,5 +317,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             finalUserList.add(userIdUserListMap.get(userId).get(0));
         }
         return finalUserList;
+    }
+
+    @Override
+    public Map<Long, UserVO> getUserVOBatch(Collection<Long> userIds) {
+        return this.listByIds(userIds)
+                .stream()
+                .map(UserVO::objToVo)
+                .collect(Collectors.toMap(UserVO::getId, Function.identity()));
     }
 }

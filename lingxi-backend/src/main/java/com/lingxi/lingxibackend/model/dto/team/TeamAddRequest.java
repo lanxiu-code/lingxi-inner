@@ -16,7 +16,10 @@ public class TeamAddRequest {
      * 队伍名称
      */
     private String name;
-
+    /**
+     * 队伍图标
+     */
+    private String icon;
     /**
      * 描述
      */

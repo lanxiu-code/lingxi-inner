@@ -67,7 +67,25 @@ public class UserVO implements Serializable {
      * 标签 json 列表
      */
     private String tags;
+    /**
+     * ip信息
+     */
+    private Object ipInfo;
 
+    /**
+     * 用户状态 0.正常 1.拉黑
+     */
+    private Integer status;
+
+    /**
+     * 在线状态 1在线 2离线
+     */
+    private Integer activeStatus;
+
+    /**
+     * 用户最近上下线时间
+     */
+    private Date lastOptTime;
     /**
      * 创建时间
      */
@@ -77,7 +95,18 @@ public class UserVO implements Serializable {
      *
      */
     private Date updateTime;
-
+    /*
+    * 是否是好友
+    * */
+    private Boolean isFriend;
+    /*
+    * 关注量
+    * */
+    private Integer followCount;
+    /**
+     * 粉丝量
+     */
+    private Integer fansCount;
     private static final long serialVersionUID = 1L;
     /**
      * 对象转包装类

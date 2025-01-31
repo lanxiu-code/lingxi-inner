@@ -19,7 +19,7 @@ public class RedissonConfig {
 
     private Integer database;
 
-    //private String password;
+    private String password;
 
     @Bean
     public RedissonClient redissonClient() {

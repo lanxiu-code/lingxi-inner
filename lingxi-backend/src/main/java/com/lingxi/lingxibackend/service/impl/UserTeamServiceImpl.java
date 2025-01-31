@@ -6,6 +6,8 @@ import com.lingxi.lingxibackend.service.UserTeamService;
 import com.lingxi.lingxibackend.mapper.UserTeamMapper;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
 * @author 蓝朽
 * @description 针对表【user_team(用户队伍关系)】的数据库操作Service实现
@@ -14,7 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserTeamServiceImpl extends ServiceImpl<UserTeamMapper, UserTeam>
     implements UserTeamService{
-
+    @Resource
+    private UserTeamMapper userTeamMapper;
+    // 获取当前队伍人数
+    @Override
+    public int getTeamUserCount(Long teamId) {
+        return userTeamMapper.getTeamUserCount(teamId);
+    }
 }
 
 

@@ -1,0 +1,44 @@
+{
+  "id": "4661264",
+  "name": "灵犀",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "23345155",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "3860899",
+      "name": "团队",
+      "font_class": "tuandui",
+      "unicode": "e69b",
+      "unicode_decimal": 59035
+    },
+    {
+      "icon_id": "9316819",
+      "name": "验收标签管理",
+      "font_class": "yanshoubiaoqianguanli",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "17860467",
+      "name": "人群包创建",
+      "font_class": "renqunbaochuangjian",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "27074216",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

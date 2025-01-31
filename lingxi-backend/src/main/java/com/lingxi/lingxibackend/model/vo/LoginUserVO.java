@@ -59,11 +59,37 @@ public class LoginUserVO implements Serializable {
      * 用户角色 0 - 普通用户 1 - 管理员
      */
     private Integer userRole;
+    /**
+     * ip信息
+     */
+    private Object ipInfo;
 
+    /**
+     * 用户状态 0.正常 1.拉黑
+     */
+    private Integer status;
+
+    /**
+     * 在线状态 1在线 2离线
+     */
+    private Integer activeStatus;
+
+    /**
+     * 用户最近上下线时间
+     */
+    private Date lastOptTime;
     /**
      * 标签 json 列表
      */
     private String tags;
+    /*
+     * 关注量
+     * */
+    private Integer followCount;
+    /**
+     * 粉丝量
+     */
+    private Integer fansCount;
 
     /**
      * 创建时间
