@@ -82,6 +82,14 @@ public class LoginUserVO implements Serializable {
      * 标签 json 列表
      */
     private String tags;
+    /*
+     * 关注量
+     * */
+    private Integer followCount;
+    /**
+     * 粉丝量
+     */
+    private Integer fansCount;
 
     /**
      * 创建时间

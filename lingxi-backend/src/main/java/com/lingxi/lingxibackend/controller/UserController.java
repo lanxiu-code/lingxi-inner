@@ -3,6 +3,7 @@ package com.lingxi.lingxibackend.controller;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lingxi.lingxibackend.annotation.AuthCheck;
@@ -14,6 +15,7 @@ import com.lingxi.lingxibackend.config.WxOpenConfig;
 import com.lingxi.lingxibackend.constant.UserConstant;
 import com.lingxi.lingxibackend.exception.BusinessException;
 import com.lingxi.lingxibackend.exception.ThrowUtils;
+import com.lingxi.lingxibackend.mapper.UserMapper;
 import com.lingxi.lingxibackend.model.dto.user.UserAddRequest;
 import com.lingxi.lingxibackend.model.dto.user.UserLoginRequest;
 import com.lingxi.lingxibackend.model.dto.user.UserQueryRequest;
@@ -24,6 +26,8 @@ import com.lingxi.lingxibackend.model.entity.User;
 import com.lingxi.lingxibackend.model.vo.LoginUserVO;
 import com.lingxi.lingxibackend.model.vo.UserVO;
 import com.lingxi.lingxibackend.service.UserService;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +35,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import com.lingxi.lingxibackend.utils.RedisUtil;
+import com.lingxi.lingxibackend.websocket.domain.entity.UserFriend;
+import com.lingxi.lingxibackend.websocket.service.UserFriendService;
 import com.lingxi.lingxibackend.websocket.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,15 +51,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-
+    @Resource
+    private UserFriendService userFriendService;
     @Resource
     private UserService userService;
+    @Resource
+    private UserMapper userMapper;
     @Resource
     private RedisUtil redisUtil;
     private static final String SALT = "lingxi";
 
     @Resource
     private JwtUtils jwtUtils;
+    /*
+     * 微信登录
+     * */
+    @GetMapping("/login/wx")
+    public BaseResponse<String> userLoginByWx(@RequestParam("code") String code, HttpServletRequest request) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("appid","wx27dd115ce4467d45");
+        map.put("secret","907ea7c7dd91bae9aa0f7fc20efc53c4");
+        map.put("js_code",code);
+        map.put("grant_type","authorization_code");
+        String string = HttpUtil.get("https://api.weixin.qq.com/sns/jscode2session", map);
+        log.info(string);
+        return null;
+    }
     /*
     * 获取token
     * */
@@ -222,14 +245,23 @@ public class UserController {
      */
     @GetMapping("/get/vo")
     public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
         BaseResponse<User> response = getUserById(id, request);
         User user = response.getData();
-        return ResultUtils.success(userService.getUserVO(user));
+        UserVO userVO = userService.getUserVO(user);
+        List<Long> friendUidList = userFriendService.getFriendList(loginUser.getId())
+                .stream().map(UserFriend::getFriendUid).collect(Collectors.toList());
+        userVO.setIsFriend(friendUidList.contains(user.getId()));
+        Integer countFans = userMapper.countFans(userVO.getId());
+        Integer countFollow = userMapper.countFollow(userVO.getId());
+        userVO.setFansCount(countFans);
+        userVO.setFollowCount(countFollow);
+        return ResultUtils.success(userVO);
     }
     /**
      * 根据 id数组 获取包装类
      *
-     * @param id
+     * @param ids
      * @param request
      * @return
      */
@@ -257,7 +289,20 @@ public class UserController {
                 userService.getQueryWrapper(userQueryRequest));
         return ResultUtils.success(userPage);
     }
-
+    /*
+    * 根据id获取粉丝列表
+    * */
+    @GetMapping("/list/fans")
+    public BaseResponse<List<UserVO>> getUserFans(HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        List<Long> firendUidList = userFriendService.getFriendList(loginUser.getId())
+                .stream().map(UserFriend::getFriendUid)
+                .collect(Collectors.toList());
+        List<UserVO> userVOS = userService.listByIds(firendUidList)
+                .stream().map(UserVO::objToVo)
+                .collect(Collectors.toList());
+        return ResultUtils.success(userVOS);
+    }
     /**
      * 分页获取用户封装列表
      *
@@ -286,8 +331,21 @@ public class UserController {
         Page<User> userPage = userService.page(new Page<>(current, size),
                 userService.getQueryWrapper(userQueryRequest));
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
-        List<UserVO> userVO = userService.getUserVO(userPage.getRecords());
-        userVOPage.setRecords(userVO);
+        List<Long> friendUidList = userFriendService.getFriendList(loginUser.getId())
+                .stream()
+                .map(UserFriend::getFriendUid)
+                .collect(Collectors.toList());
+        List<UserVO> userVOS = userService.getUserVO(userPage.getRecords())
+                .stream()
+                .peek(userVO -> {
+                    userVO.setIsFriend(friendUidList.contains(userVO.getId()));
+                    Integer countFans = userMapper.countFans(userVO.getId());
+                    Integer countFollow = userMapper.countFollow(userVO.getId());
+                    userVO.setFansCount(countFans);
+                    userVO.setFollowCount(countFollow);
+                })
+                .collect(Collectors.toList());
+        userVOPage.setRecords(userVOS);
         //写缓存,10s过期
 //        try{
 //            redisUtil.set(key,userVOPage,60);

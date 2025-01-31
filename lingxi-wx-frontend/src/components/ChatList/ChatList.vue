@@ -68,7 +68,7 @@ const virtualListChange = (vList) => {
 };
 const queryList = (pageNo, pageSize) => {
     if (messageOptions.value.isLast) {
-        paging.value.complete(true);
+        paging.value?.complete(true);
     } else {
         loadData();
     }
@@ -80,6 +80,7 @@ const loadData = async (size = 20) => {
 uni.$on('updateMsgList', () => {
     chatStore.currentMessageOptions.cursor = null;
     chatStore.currentMessageOptions.isLast = false;
+    paging.value.complete(true);
     paging.value?.reload();
 });
 // 监听键盘高度改变，请不要直接通过uni.onKeyboardHeightChange监听，否则可能导致z-paging内置的键盘高度改变监听失效（如果不需要切换表情面板则不用写）

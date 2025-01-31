@@ -95,7 +95,18 @@ public class UserVO implements Serializable {
      *
      */
     private Date updateTime;
-
+    /*
+    * 是否是好友
+    * */
+    private Boolean isFriend;
+    /*
+    * 关注量
+    * */
+    private Integer followCount;
+    /**
+     * 粉丝量
+     */
+    private Integer fansCount;
     private static final long serialVersionUID = 1L;
     /**
      * 对象转包装类

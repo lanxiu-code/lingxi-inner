@@ -124,7 +124,7 @@ declare namespace API {
   };
 
   type ChatMessageResp = {
-    fromUser?: UserInfo;
+    fromUser?: UserVO;
     message?: MessageInfo;
   };
 
@@ -180,6 +180,10 @@ declare namespace API {
     messagePageReq: ChatMessagePageReq;
   };
 
+  type getRoomIdParams = {
+    targetUserId: number;
+  };
+
   type getRoomPageParams = {
     pageBaseReq: CursorPageBaseReq;
   };
@@ -223,6 +227,8 @@ declare namespace API {
     activeStatus?: number;
     lastOptTime?: string;
     tags?: string;
+    followCount?: number;
+    fansCount?: number;
     createTime?: string;
     updateTime?: string;
   };
@@ -431,8 +437,8 @@ declare namespace API {
     userRole?: number;
   };
 
-  type UserInfo = {
-    uid?: string;
+  type userLoginByWxParams = {
+    code: string;
   };
 
   type UserLoginRequest = {
@@ -493,5 +499,8 @@ declare namespace API {
     lastOptTime?: string;
     createTime?: string;
     updateTime?: string;
+    isFriend?: boolean;
+    followCount?: number;
+    fansCount?: number;
   };
 }

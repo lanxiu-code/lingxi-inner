@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.lingxi.lingxibackend.websocket.domain.entity.UserFriend;
+import com.lingxi.lingxibackend.websocket.service.UserFriendService;
+import com.lingxi.lingxibackend.websocket.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -44,6 +47,8 @@ import org.springframework.util.DigestUtils;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+    @Resource
+    private UserMapper userMapper;
     /**
      * 盐值，混淆密码
      */
@@ -199,7 +204,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         LoginUserVO loginUserVO = new LoginUserVO();
+        Integer countFans = userMapper.countFans(user.getId());
+        Integer countFollow = userMapper.countFollow(user.getId());
         BeanUtils.copyProperties(user, loginUserVO);
+        loginUserVO.setFollowCount(countFollow);
+        loginUserVO.setFansCount(countFans);
         return loginUserVO;
     }
 

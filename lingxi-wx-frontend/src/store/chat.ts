@@ -86,6 +86,7 @@ export const useChatStore = defineStore('chat', () => {
             currentMessageOptions.value.isLast = data.isLast;
             currentMessageOptions.value.isLoading = false;
         }
+        console.log(data);
         return computedList;
     };
 
@@ -145,8 +146,7 @@ export const useChatStore = defineStore('chat', () => {
         const current = lastMessageMap.get(msg.message.roomId);
         current?.set(msg.message.id, msg);
         uni.$emit('updateMsgList');
-        lastMessageMap.set(msg.message.roomId, new Map([[msg.message.id, msg]]));
-        globalStore.currentSession.roomId = msg.message.roomId;
+        // lastMessageMap.set(msg.message.roomId, new Map([[msg.message.id, msg]]));
         // 发完消息就要刷新会话列表，
         // 如果当前会话已经置顶了，可以不用刷新
         if (globalStore.currentSession && globalStore.currentSession.roomId != msg.message.roomId) {
@@ -154,7 +154,7 @@ export const useChatStore = defineStore('chat', () => {
             if (!current) {
                 result = await getContactDetail({ id: msg.message.roomId });
             }
-            console.log(result);
+            uni.$emit('updateUnReadCount');
             updateSessionLastActiveTime(msg.message.roomId, result.data.data);
         }
         // 聊天记录计数
@@ -166,7 +166,6 @@ export const useChatStore = defineStore('chat', () => {
                 sessionList.value[index] = item;
             }
         }
-        uni.$emit('updateUnReadCount');
     };
     /** 会话列表去重并排序 */
     const sortAndUniqueSessionList = () => {

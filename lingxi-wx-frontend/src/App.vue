@@ -4,6 +4,7 @@ import { useUserStore } from '@/store/user';
 const store = useUserStore();
 onLaunch(async () => {
     console.log('App Launch');
+
     await store.getCurrentUser();
 });
 onShow(() => {

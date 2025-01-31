@@ -62,12 +62,11 @@ mybatis-plus:
 # 微信相关
 wx:
   # 微信公众平台
-
   mp:
     token: xxx
-    aesKey: xxx
-    appId: xxx
-    secret: xxx
+    aesKey: lanxiu
+    appId: wx27dd115ce4467d45
+    secret: 907ea7c7dd91bae9aa0f7fc20efc53c4
     config-storage:
       http-client-type: HttpClient
       key-prefix: wx
@@ -76,12 +75,10 @@ wx:
         port: 6379
       type: Memory
   # 微信开放平台
-  
   open:
-    appId: xxx
-    appSecret: xxx
+    appId: wx27dd115ce4467d45
+    appSecret: 907ea7c7dd91bae9aa0f7fc20efc53c4
 # 对象存储
-
 cos:
   client:
     accessKey: xxx

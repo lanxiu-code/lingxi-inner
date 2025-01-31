@@ -5,6 +5,7 @@
         @virtualListChange="virtualListChange"
         @query="queryList"
         preload-page="5"
+        empty-view-text="暂无会话"
         loading-more-no-more-text="我也是有底线的！"
         :force-close-inner-list="true"
         :auto-clean-list-when-reload="false"
@@ -15,7 +16,7 @@
             <GlobalNoticeBar v-show="showTop" />
         </template>
         <view
-            @click="onSelectSession(item.roomId, item.type)"
+            @click="onSelectSession(item)"
             class="chat-message-item"
             :id="`zp-id-${zp_index}`"
             :key="item.zp_index"
@@ -107,11 +108,11 @@ const props = defineProps({
 const virtualListChange = (vList) => {
     virtualList.value = vList;
 };
-const onSelectSession = (roomId: number, roomType: RoomTypeEnum) => {
-    globalStore.currentSession.roomId = roomId;
-    globalStore.currentSession.type = roomType;
+const onSelectSession = (item) => {
+    globalStore.currentSession.roomId = item.roomId;
+    globalStore.currentSession.type = item.roomType;
     uni.navigateTo({
-        url: '/pages/message/chatBox/chatBox'
+        url: `/pages/message/chatBox/chatBox?title=${item.name}`
     });
 };
 const queryList = (current, pageSize) => {

@@ -33,17 +33,32 @@
                 </van-row>
                 <van-row>
                     <van-col span="5">
-                        <text class="follow">关注 10</text>
+                        <text class="follow">
+                            关注 {{ currentUser?.followCount ? currentUser?.followCount : 0 }}
+                        </text>
                     </van-col>
                     <van-col span="5">
-                        <text class="fan">粉丝 20</text>
+                        <text class="fan">
+                            粉丝 {{ currentUser?.fansCount ? currentUser?.fansCount : 0 }}
+                        </text>
                     </van-col>
-                    <van-col span="3" offset="8" v-show="!isMe">
-                        <text class="fan">关注</text>
+                    <van-col span="5" offset="6" v-show="!isMe">
+                        <text
+                            class="applyFriend"
+                            :style="{ background: currentUser.isFriend ? '#c0c0c0' : '#425a8b' }"
+                            @click="applyFriend"
+                        >
+                            {{ currentUser.isFriend ? '已关注' : '关注' }}
+                        </text>
                     </van-col>
                     <van-col span="3" v-show="!isMe">
                         <van-icon
-                            @click="jump"
+                            @click="
+                                jump(
+                                    false,
+                                    `/pages/message/chatBox/chatBox?title=${currentUser.username}&targetUserId=${currentUser.id}`
+                                )
+                            "
                             size="1.5rem"
                             class-prefix="iconfont icon-xiaoxi"
                             name="extra"
@@ -51,7 +66,7 @@
                     </van-col>
                     <van-col span="2" offset="12" v-show="isMe">
                         <van-icon
-                            @click="jump"
+                            @click="jump(false, '/pages/account/info/info')"
                             size="1.5rem"
                             class-prefix="iconfont icon-shezhi"
                             name="extra"
@@ -115,8 +130,12 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 import { useUserStore } from '@/store/user';
+import { useChatStore } from '@/store/chat';
 import { onLoad } from '@dcloudio/uni-app';
 import { tagStrToList } from '@/utils/tagUtil';
+import { apply } from '@/servers/api/userFriendController';
+import { ResponseCodeEnum } from '@/enum/ResponseCodeEnum';
+const chatStore = useChatStore();
 // props
 const props = defineProps({
     isMe: {
@@ -130,10 +149,32 @@ const props = defineProps({
         default: {}
     }
 });
-const jump = () => {
-    uni.navigateTo({
-        url: '/pages/account/info/info'
+
+const jump = (flag, path) => {
+    if (flag) {
+        uni.switchTab({
+            url: path
+        });
+    } else {
+        uni.navigateTo({
+            url: path
+        });
+    }
+};
+const applyFriend = async () => {
+    let res = await apply({
+        msg: '请求好友',
+        targetUid: props.currentUser.id
     });
+    if (res.data.code === ResponseCodeEnum.SUCCESS) {
+        uni.showToast({
+            title: '关注成功'
+        });
+        chatStore.getSessionList();
+        setTimeout(() => {
+            uni.navigateBack();
+        }, 1000);
+    }
 };
 </script>
 
@@ -159,6 +200,11 @@ const jump = () => {
             display: block;
             margin: 20rpx 0;
             font-size: 24rpx;
+        }
+        .applyFriend {
+            background: #425a8b;
+            padding: 10rpx 20rpx 10rpx 20rpx;
+            border-radius: 50rpx;
         }
     }
 }

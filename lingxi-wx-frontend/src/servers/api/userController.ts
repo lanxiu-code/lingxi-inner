@@ -64,6 +64,14 @@ export async function getUserVoById(
   });
 }
 
+/** 此处后端没有提供注释 GET /user/list/fans */
+export async function getUserFans(options?: { [key: string]: any }) {
+  return request<API.BaseResponseListUserVO>('/user/list/fans', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /user/list/page */
 export async function listUserByPage(body: API.UserQueryRequest, options?: { [key: string]: any }) {
   return request<API.BaseResponsePageUser>('/user/list/page', {
@@ -99,6 +107,21 @@ export async function userLogin(body: API.UserLoginRequest, options?: { [key: st
       'Content-Type': 'application/json',
     },
     data: body,
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 GET /user/login/wx */
+export async function userLoginByWx(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.userLoginByWxParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseString>('/user/login/wx', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
     ...(options || {}),
   });
 }

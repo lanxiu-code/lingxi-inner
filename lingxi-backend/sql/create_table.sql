@@ -22,6 +22,8 @@ create table user
     userRole     int      default 0 not null comment '用户角色 0 - 普通用户 1 - 管理员',
     tags         varchar(1024) null comment '标签 json 列表',
     ipInfo      json DEFAULT NULL COMMENT 'ip信息',
+    followCount int(11) DEFAULT '0' COMMENT '关注人数',
+    fansCount   int(11) DEFAULT '0' COMMENT '粉丝人数',
     status       int(11) DEFAULT '0' COMMENT '使用状态 0.正常 1拉黑',
     lastOptTime datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '最后上下线时间',
     activeStatus int(11) DEFAULT '2' COMMENT '在线状态 1在线 2离线',
@@ -229,3 +231,28 @@ CREATE TABLE `secure_invoke_record` (
                                         PRIMARY KEY (`id`) USING BTREE,
                                         KEY `idx_next_retry_time` (`nextRetryTime`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地消息表';
+
+
+# 触发器：自动更新关注数和粉丝数
+create trigger user_friend_insert_trigger
+    after insert on user_friend for each row
+begin
+    update user
+    set followCount = followCount + 1
+    where id = new.uid;
+    update user
+    set fansCount = fansCount + 1
+    where id = new.friendUid;
+end;
+
+
+create trigger user_friend_delete_trigger
+    after delete on user_friend for each row
+begin
+    update user
+    set followCount = followCount - 1
+    where id = old.uid;
+    update user
+    set fansCount = fansCount - 1
+    where id = old.friendUid;
+end;

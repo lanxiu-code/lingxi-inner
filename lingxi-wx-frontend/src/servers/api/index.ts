@@ -9,6 +9,7 @@ import * as tagController from './tagController';
 import * as fileController from './fileController';
 import * as userFriendController from './userFriendController';
 import * as wxMpController from './wxMpController';
+import * as roomController from './roomController';
 import * as contactController from './contactController';
 export default {
   chatController,
@@ -18,5 +19,6 @@ export default {
   fileController,
   userFriendController,
   wxMpController,
+  roomController,
   contactController,
 };

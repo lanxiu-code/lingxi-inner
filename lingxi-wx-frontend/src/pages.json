@@ -118,6 +118,13 @@
 			{
 				"navigationBarTitleText" : "虚拟列表测试"
 			}
+		},
+		{
+			"path" : "pages/wxLogin/wxLogin",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 
 	],

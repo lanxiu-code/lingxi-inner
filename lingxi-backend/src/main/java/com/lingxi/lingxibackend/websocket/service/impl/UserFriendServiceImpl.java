@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,6 +56,13 @@ public class UserFriendServiceImpl extends ServiceImpl<UserFriendMapper, UserFri
         RoomFriend roomFriend = roomService.createFriendRoom(Arrays.asList(uid, friendApplyReq.getTargetUid()));
         //发送一条同意消息。。我们已经是好友了，开始聊天吧
         chatService.sendMsg(MessageAdapter.buildAgreeMsg(roomFriend.getRoomId()), uid);
+    }
+
+    @Override
+    public List<UserFriend> getFriendList(Long userId) {
+        return lambdaQuery()
+                .eq(UserFriend::getUid,userId)
+                .list();
     }
 }
 
